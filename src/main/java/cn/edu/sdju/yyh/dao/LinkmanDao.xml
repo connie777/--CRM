@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.sdju.yyh.dao.LinkmanDao">
+    <!--SQL片段  -->
+    <sql id="selectLinkmanListWhere">
+        <where>
+	       <if test="lkm_name != null" >
+               lkm_name like "%"#{lkm_name}"%"
+	       </if>
+	       <if test="lkm_gender != null" >
+	        and lkm_gender = #{lkm_gender}
+	       </if>
+            <!-- 所属客户-->
+            <if test="lkm_cust_id != null" >
+            and lkm_cust_id = #{lkm_cust_id}
+            </if>
+        </where>
+    </sql>
+<!-- 查询联系人列表  -->
+	<select id="selectLinkmanList" parameterType="linkman"
+                                           resultType="linkman">
+		SELECT
+			lkm_id,
+            lkm_name,
+            lkm_cust_id,
+			lkm_gender,
+            lkm_phone,
+            lkm_mobile,
+            lkm_email,
+            lkm_qq,
+            lkm_position,
+            lkm_memo
+		FROM
+			linkman
+		<include refid="selectLinkmanListWhere"/>
+        <!-- 执行分页查询 -->
+        <if test="start_index !=null and rows != null">
+
+            LIMIT #{start_index},#{rows}
+        </if>
+	</select>
+	<!-- 查询联系人总数 -->
+	<select id="selectLinkmanListCount" resultType="Integer">
+		select count(*) from linkman
+		<include refid="selectLinkmanListWhere"/>
+	</select>	
+	
+	<!-- 添加联系人 -->
+	<insert id="createLinkman" parameterType="linkman">
+	    insert into linkman(
+                        lkm_name,
+                        lkm_cust_id,
+                        lkm_gender,
+                        lkm_phone,
+                        lkm_mobile,
+                        lkm_email,
+                        lkm_qq,
+                        lkm_position,
+                        lkm_memo
+	             )
+	             values(#{lkm_name},
+	                    #{lkm_cust_id},
+	                    #{lkm_gender},
+	                    #{lkm_phone},
+	                    #{lkm_mobile},
+	                    #{lkm_email},
+	                    #{lkm_qq},
+	                    #{lkm_position},
+	                    #{lkm_memo}
+	            )
+	</insert>
+	<!-- 根据id获取联系人信息 -->
+	<select id="getLinkmanById" parameterType="Integer"
+	resultType="linkman">
+	    select * from linkman where lkm_id = #{lkm_id}
+	</select>
+	<!-- 更新联系人 -->
+	<update id="updateLinkman" parameterType="linkman">
+	    update linkman
+	    <set>
+	        <if test="lkm_name!=null">
+                lkm_name=#{lkm_name},
+	        </if>
+	        <if test="lkm_cust_id!=null">
+                lkm_cust_id=#{lkm_cust_id},
+	        </if>
+	        <if test="lkm_gender!=null">
+                lkm_gender=#{lkm_gender},
+	        </if>
+	        <if test="lkm_phone!=null">
+                lkm_phone=#{lkm_phone},
+	        </if>
+	        <if test="lkm_mobile!=null">
+                lkm_mobile=#{lkm_mobile},
+	        </if>
+	        <if test="lkm_email!=null">
+                lkm_email=#{lkm_email},
+	        </if>
+	        <if test="lkm_qq!=null">
+                lkm_qq=#{lkm_qq},
+	        </if>
+	        <if test="lkm_position!=null">
+                lkm_position=#{lkm_position},
+	        </if>
+	        <if test="lkm_memo!=null">
+                lkm_memo=#{lkm_memo},
+	        </if>
+	    </set>
+	    where lkm_id=#{lkm_id}
+	</update>
+	<!-- 删除联系人 -->
+	<delete id="deleteLinkman" parameterType="Integer">
+	    delete from linkman where lkm_id=#{lkm_id}
+	</delete>
+
+    <!--根据客户id查联系人-->
+    <select id="findByCustId" parameterType="Integer" resultType="linkman">
+        select *
+        from linkman
+        where lkm_cust_id = #{lkm_cust_id}
+    </select>
+</mapper>

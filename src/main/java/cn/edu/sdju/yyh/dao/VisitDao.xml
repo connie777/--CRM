@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.sdju.yyh.dao.VisitDao">
+    <!--SQL片段  &lt;表示<   -->
+    <sql id="selectVisitListWhere">
+        <where>
+	       <if test="visit_cust_id != null" >
+               visit_cust_id = #{visit_cust_id}
+	       </if>
+	       <if test="start_date != null " >
+	        and visit_time >= #{start_date}
+	       </if>
+           <if test="end_date != null " >
+            and visit_time &lt;= #{end_date}
+           </if>
+
+        </where>
+    </sql>
+<!-- 查询拜访信息列表  -->
+	<select id="selectVisitList" parameterType="visit"
+                                           resultType="visit">
+		SELECT
+			visit_id,
+            visit_cust_id,
+            visit_user_id,
+			visit_lkm_id,
+            visit_time,
+            visit_addr,
+            visit_detail,
+            visit_nexttime
+		FROM
+			visit
+		<include refid="selectVisitListWhere"/>
+        <!-- 执行分页查询 -->
+        <if test="start_index !=null and rows != null">
+
+            LIMIT #{start_index},#{rows}
+        </if>
+	</select>
+	<!-- 查询拜访信息总数 -->
+	<select id="selectVisitListCount" resultType="Integer">
+		select count(*) from visit
+		<include refid="selectVisitListWhere"/>
+	</select>	
+	
+	<!-- 添加拜访信息 -->
+	<insert id="createVisit" parameterType="visit">
+	    insert into visit(
+                        visit_cust_id,
+                        visit_user_id,
+                        visit_lkm_id,
+                        visit_time,
+                        visit_addr,
+                        visit_detail,
+                        visit_nexttime
+	             )
+	             values(#{visit_cust_id},
+	                    #{visit_user_id},
+	                    #{visit_lkm_id},
+	                    #{visit_time},
+	                    #{visit_addr},
+	                    #{visit_detail},
+	                    #{visit_nexttime}
+	            )
+	</insert>
+	<!-- 根据id获取拜访信息 -->
+	<select id="getVisitById" parameterType="Integer"
+	resultType="visit">
+	    select * from visit where visit_id = #{visit_id}
+	</select>
+	<!-- 更新拜访信息 -->
+	<update id="updateVisit" parameterType="visit">
+	    update visit
+	    <set>
+	        <if test="visit_cust_id!=null">
+                visit_cust_id=#{visit_cust_id},
+	        </if>
+	        <if test="visit_user_id!=null">
+                visit_user_id=#{visit_user_id},
+	        </if>
+	        <if test="visit_lkm_id!=null">
+                visit_lkm_id=#{visit_lkm_id},
+	        </if>
+	        <if test="visit_time!=null">
+                visit_time=#{visit_time},
+	        </if>
+	        <if test="visit_addr!=null">
+                visit_addr=#{visit_addr},
+	        </if>
+	        <if test="visit_detail!=null">
+                visit_detail=#{visit_detail},
+	        </if>
+	        <if test="visit_nexttime!=null">
+                visit_nexttime=#{visit_nexttime},
+	        </if>
+	    </set>
+	    where visit_id=#{visit_id}
+	</update>
+	<!-- 删除拜访信息 -->
+	<delete id="deleteVisit" parameterType="Integer">
+	    delete from visit where visit_id=#{visit_id}
+	</delete>
+</mapper>
