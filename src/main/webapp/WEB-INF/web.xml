@@ -44,6 +44,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>crm</servlet-name>
+        <!--<url-pattern>/</url-pattern>-->
 		<url-pattern>*.action</url-pattern>
 	</servlet-mapping>
 	<!-- 系统默认页面 -->

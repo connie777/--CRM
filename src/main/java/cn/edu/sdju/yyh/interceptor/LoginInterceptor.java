@@ -17,10 +17,22 @@ public class LoginInterceptor implements HandlerInterceptor {
 			throws Exception {
 		// 获取请求的URL
 		String url = request.getRequestURI();
-		// URL:除了登录请求外，其他的URL都进行拦截控制
+		// URL:除了登录注册请求外，其他的URL都进行拦截控制
 		if (url.indexOf("/login.action") >= 0) {
 			return true;
 		}
+		if (url.indexOf("/register.action")>=0){
+            return true;
+        }
+        if (url.indexOf("/codeCheck.action")>=0){
+		    return true;
+        }
+        if (url.indexOf("/phoneCheck.action")>=0){
+            return true;
+        }
+        if (url.indexOf("/pwdReset.action")>=0){
+            return true;
+        }
 		// 获取Session
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("USER_SESSION");
@@ -30,7 +42,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 		}
 		// 不符合条件的给出提示信息，并转发到登录页面
 		request.setAttribute("msg", "您还没有登录，请先登录！");
-		request.getRequestDispatcher("/WEB-INF/jsp/login.jsp")
+		request.getRequestDispatcher("/WEB-INF/html/login.html")
 		                                        .forward(request, response);
 		return false;
 	}

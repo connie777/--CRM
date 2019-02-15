@@ -20,4 +20,10 @@ public interface UserDao {
     public User selectUserById(@Param("id") Integer id);
 
     public List<User> findAll();
+
+    public User findUserByUsercode(String usercode);
+
+    public int insertUser(User user);
+
+    public int updateUser(User user);
 }

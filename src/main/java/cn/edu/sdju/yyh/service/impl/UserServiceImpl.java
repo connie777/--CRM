@@ -33,4 +33,19 @@ public class UserServiceImpl implements UserService {
     public List<User> findAll() {
         return this.userDao.findAll();
     }
+
+    @Override
+    public User findUserByUsercode(String usercode) {
+	    return this.userDao.findUserByUsercode(usercode);
+    }
+
+    @Override
+    public int insertUser(User user) {
+        return this.userDao.insertUser(user);
+    }
+
+    @Override
+    public int updateUser(User user) {
+        return this.userDao.updateUser(user);
+    }
 }

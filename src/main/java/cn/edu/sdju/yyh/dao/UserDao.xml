@@ -21,4 +21,24 @@
         select *
         from sys_user
     </select>
+    
+    <select id="findUserByUsercode" resultType="user" parameterType="String">
+        select *
+        from sys_user
+        where user_code = #{usercode}
+    </select>
+    
+    <insert id="insertUser" parameterType="user">
+        insert into sys_user(
+        user_code, user_name, user_password, user_state,user_phone
+        ) values (
+        #{user_code},#{user_name},#{user_password},1,#{user_phone}
+        )
+    </insert>
+    
+    <update id="updateUser" parameterType="user">
+        update sys_user
+        set user_password = #{user_password}
+        where user_code = #{user_code}
+    </update>
 </mapper>
