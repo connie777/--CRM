@@ -1,14 +1,13 @@
 package cn.edu.sdju.yyh.po;
 import java.io.Serializable;
-import java.util.Date;
 /**
  * 客户持久化类
  */
 public class Customer implements Serializable {
-	private static final long serialVersionUID = 1L;
 	private Integer cust_id;          // 客户编号
 	private String cust_name;         // 客户名称
 	private Integer cust_user_id;    // 负责人id
+    private String cust_user_name;   //负责人姓名
 	private Integer cust_create_id;  // 创建人id
 	private String cust_source;      // 客户信息来源
 	private String cust_industry;    // 客户所属行业
@@ -110,4 +109,12 @@ public class Customer implements Serializable {
 	public void setCust_mobile(String cust_mobile) {
 		this.cust_mobile = cust_mobile;
 	}
-	}
+
+    public String getCust_user_name() {
+        return cust_user_name;
+    }
+
+    public void setCust_user_name(String cust_user_name) {
+        this.cust_user_name = cust_user_name;
+    }
+}

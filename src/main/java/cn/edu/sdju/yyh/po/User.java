@@ -11,6 +11,15 @@ public class User implements Serializable{
 	private String user_password; //用户密码
     private String user_phone;    //用户手机
     private Integer user_state;   //用户状态
+    private Integer user_level; //用户级别 1为高管 2为销售主管 3为销售
+
+    public Integer getUser_level() {
+        return user_level;
+    }
+
+    public void setUser_level(Integer user_level) {
+        this.user_level = user_level;
+    }
 
     public String getUser_phone() {
         return user_phone;
@@ -19,7 +28,6 @@ public class User implements Serializable{
     public void setUser_phone(String user_phone) {
         this.user_phone = user_phone;
     }
-
 
 	public Integer getUser_id() {
 		return user_id;

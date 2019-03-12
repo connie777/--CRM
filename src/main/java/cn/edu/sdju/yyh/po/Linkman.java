@@ -1,6 +1,7 @@
 package cn.edu.sdju.yyh.po;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @ClassName Linkman
@@ -11,7 +12,6 @@ import java.io.Serializable;
  **/
 public class Linkman implements Serializable{
 
-    private static final long serialVersionUID = 1078662832003753810L;
     private Integer lkm_id;
     private String lkm_name;  /*联系人名称*/
     private String lkm_gender;  /*联系人性别*/
@@ -22,7 +22,18 @@ public class Linkman implements Serializable{
     private String lkm_position; /* 职位*/
     private String lkm_memo;   /*备注*/
     private Integer lkm_cust_id;/* 客户id*/
+    private String lkm_cust_name; /*所属客户姓名*/
     private Customer customer; /*一个联系人对应一个客户*/
+    private List<Integer> cust_ids;
+
+    public List<Integer> getCust_ids() {
+        return cust_ids;
+    }
+
+    public void setCust_ids(List<Integer> cust_ids) {
+        this.cust_ids = cust_ids;
+    }
+
     /*分页属性*/
     private Integer start_index;            // 起始行
     private Integer rows;             // 所取行数
@@ -127,5 +138,13 @@ public class Linkman implements Serializable{
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public String getLkm_cust_name() {
+        return lkm_cust_name;
+    }
+
+    public void setLkm_cust_name(String lkm_cust_name) {
+        this.lkm_cust_name = lkm_cust_name;
     }
 }
