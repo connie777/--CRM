@@ -10,6 +10,7 @@
 	<!-- 引入css样式文件 -->
 	<!-- Bootstrap Core CSS -->
 	<link href="../../css/bootstrap.min.css" rel="stylesheet" />
+    <%--<link href="../../css/fileinput.min.css">--%>
 	<!-- MetisMenu CSS -->
 	<link href="../../css/metisMenu.min.css" rel="stylesheet" />
 	<!-- DataTables CSS -->
@@ -19,15 +20,23 @@
 	<!-- Custom Fonts -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css">
     <link href="../../css/crm.css" rel="stylesheet" type="text/css" />
-
+    <%--提示框--%>
+    <link rel="stylesheet" href="../../css/spop.min.css" />
+    <link rel="stylesheet" href="../../css/simple-line-icons.css">
+    <%--confirm美化--%>
+    <link rel="stylesheet" href="../../css/animate.css">
+    <link rel="stylesheet" href="../../css/flavr.css">
+    <%--文件上传--%>
+    <link rel="stylesheet" href="../../css/fileinput.css">
 </head>
 <body>
 	
 		<!-- 导航栏部分 -->
   <nav class="navbar navbar-default navbar-static-top" role="navigation"
 		 style="margin-bottom: 0">
+    <%--左上角大logo--%>
 	<div class="navbar-header">
-		<a class="navbar-brand" href="${pageContext.request.contextPath }/customer/list.action">
+		<a class="navbar-brand" href="${pageContext.request.contextPath }/dashboard/show.action">
             <i class="fa fa-bank"></i>
             CRM客户关系管理系统
         </a>
@@ -176,7 +185,7 @@
 				               用户：${USER_SESSION.user_name}
 				    </a>
 				</li>
-				<li><a href="#"><i class="fa fa-gear fa-fw"></i> 系统设置</a></li>
+				<%--<li><a href="#"><i class="fa fa-gear fa-fw"></i> 系统设置</a></li>--%>
 				<li class="divider"></li>
 				<li>
 					<a href="${pageContext.request.contextPath }/logout.action">
@@ -191,7 +200,72 @@
 	<div class="navbar-default sidebar" role="navigation">
 		<div class="sidebar-nav navbar-collapse">
 			<ul class="nav" id="side-menu">
-				<%--<li class="sidebar-search">
+                <%--一级菜单--%>
+				<li>
+                    <a href="#" >
+                        <i class="fa fa-user-circle fa-fw"></i>
+                        客户管理
+                    </a>
+                    <ul>
+                        <li>
+                            <a href="${pageContext.request.contextPath }/customer/list.action" <%--class="active"--%>>
+                                <i class="fa fa-user-circle fa-fw"></i>
+                                客户信息管理
+                            </a>
+                        </li>
+                        <li>
+                            <a href="${pageContext.request.contextPath }/linkman/list.action">
+                                <i class="fa fa-address-book fa-fw"></i>
+                                客户联系人管理
+                            </a>
+                        </li>
+                        <li>
+                            <a href="${pageContext.request.contextPath }/visit/list.action">
+                                <i class="fa fa-suitcase fa-fw" ></i>
+                                客户拜访管理
+                            </a>
+                        </li>
+                    </ul>
+
+				</li>
+                <%--一级菜单--%>
+                <li>
+                        <a href="#" >
+                            <i class="fa fa-suitcase fa-fw" ></i>
+                            营销管理
+                        </a>
+
+                        <ul>
+                            <li>
+                                <a href="${pageContext.request.contextPath }/market/planList.action">
+                                    <i class="fa fa-suitcase fa-fw" ></i> 营销计划管理
+                                </a>
+                            </li>
+                            <li>
+                                <a href="${pageContext.request.contextPath }/marketPerform/list.action">
+                                    <i class="fa fa-suitcase fa-fw" ></i> 营销业绩管理
+                                </a>
+                            </li>
+                        </ul>
+
+                </li>
+                <%--一级菜单--%>
+                <c:if test="${USER_SESSION.user_level != 3}">
+                <li>
+                        <a href="${pageContext.request.contextPath }/contract/list.action">
+                            <i class="fa fa-file-text fa-fw" ></i> 合同管理
+                        </a>
+                </li>
+                </c:if>
+                <%--一级菜单--%>
+                <li>
+                    <a href="${pageContext.request.contextPath }/dashboard/show.action">
+                        <i class="fa fa-tachometer fa-fw" ></i> Dashboard
+                    </a>
+                </li>
+
+                <%--一级菜单 全局搜索（暂时无法实现）--%>
+                <%--<li class="sidebar-search">
 					<div class="input-group custom-search-form">
 						<input type="text" class="form-control" placeholder="查询内容...">
 						<span class="input-group-btn">
@@ -199,30 +273,12 @@
 								<i class="fa fa-search" style="padding: 3px 0 3px 0;"></i>
 							</button>
 						</span>
-					</div> 
+					</div>
 				</li>--%>
-				<li>
-				    <a href="${pageContext.request.contextPath }/customer/list.action" class="active">
-                        <i class="fa fa-user-circle fa-fw"></i>
-                        客户管理
-				    </a>
-				</li>
-				<li>
-				    <a href="${pageContext.request.contextPath }/linkman/list.action">
-                        <i class="fa fa-address-book fa-fw"></i>
-                        联系人管理
-				    </a>
-				</li>
-                <li>
-                    <a href="${pageContext.request.contextPath }/visit/list.action">
-                        <i class="fa fa-suitcase fa-fw" ></i> 客户拜访管理
-                    </a>
-                </li>
 			</ul>
 		</div>
 	</div>
 	<!-- 左侧显示列表部分 end--> 
   </nav>
-	
 </body>
 </html>

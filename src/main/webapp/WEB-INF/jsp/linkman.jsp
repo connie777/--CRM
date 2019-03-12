@@ -34,16 +34,18 @@
 					<div class="form-group">
 						<label for="linkmanName">联系人名称</label>
 						<input type="text" class="form-control" id="linkmanName"
-						                    name="lkm_name" />
+						     value="${lkm_name}" name="lkm_name" />
 					</div>
 					<div class="form-group" style="margin-left: 20px;margin-right: 20px;">
                         <label>性别</label>
                         <label class="radio-inline">
-                            <input type="radio" name="lkm_gender" id="male" value="男">
+                            <input type="radio" name="lkm_gender" id="male" value="男"
+                                    <c:if test="${lkm_gender=='男'}">checked</c:if>>
                             男
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="lkm_gender" id="female" value="女">
+                            <input type="radio" name="lkm_gender" id="female" value="女"
+                                   <c:if test="${lkm_gender=='女'}">checked</c:if>>
                             女
                         </label>
 					</div>
@@ -52,7 +54,8 @@
 						<select	class="form-control" id="belongCus"  name="lkm_cust_id">
 							<option value="">--请选择--</option>
 							<c:forEach items="${cusList}" var="item">
-								<option value="${item.cust_id}">
+								<option value="${item.cust_id}"
+                                        <c:if test="${item.cust_id == lkm_cust_id}"> selected</c:if>>
 								    ${item.cust_name }
 								</option>
 							</c:forEach>
@@ -62,10 +65,16 @@
 				</form>
 			</div>
 		</div>
-		<a href="#" class="btn btn-primary" data-toggle="modal" 
-		           data-target="#newLinkmanDialog" onclick="clearLinkman()">
-            <i class="fa fa-plus fa-lg" style="margin-right: 5px"></i>
-            新建</a>
+        <%--权限管理--%>
+        <c:if test="${USER_SESSION.user_level != 3}">
+            <a href="#" class="btn btn-primary" data-toggle="modal"
+                       data-target="#newLinkmanDialog" onclick="clearLinkman()"style="margin-bottom: 4px">
+                <i class="fa fa-plus fa-lg" style="margin-right: 5px"></i>
+                新建</a>
+        </c:if>
+        <a href="${pageContext.request.contextPath}/excelExport/exportLinkman.action" class="btn btn-primary"  style="margin-bottom: 4px;margin-left: 6px;">
+            <i class="fa fa-share fa-lg" style="margin-right: 5px"></i>
+            Excel导出</a>
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="panel panel-default">
@@ -80,22 +89,26 @@
 								<th>手机</th>
 								<th>所属客户</th>
 								<th>职位</th>
+                                <c:if test="${USER_SESSION.user_level!=3}">
 								<th>操作</th>
+                                </c:if>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody style="text-align: center">
 							<c:forEach items="${page.rows}" var="row">
 								<tr>
 									<td>${row.lkm_name}</td>
 									<td>${row.lkm_gender}</td>
 									<td>${row.lkm_phone}</td>
 									<td>${row.lkm_mobile}</td>
-                                    <td>${row.customer.cust_name}</td>
+                                    <td>${row.lkm_name}</td>
 									<td>${row.lkm_position}</td>
+                                    <c:if test="${USER_SESSION.user_level!=3}">
 									<td>
 										<a href="#" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#linkmanEditDialog" onclick= "editLinkman(${row.lkm_id})"><i class="fa fa-edit fa-lg"></i>修改</a>
 										<a href="#" class="btn btn-danger btn-xs" onclick="deleteLinkman(${row.lkm_id})"><i class="fa fa-trash-o fa-lg"></i>删除</a>
 									</td>
+                                    </c:if>
 								</tr>
 							</c:forEach>
 						</tbody>
@@ -109,7 +122,6 @@
 			</div>
 			<!-- /.col-lg-12 -->
 		</div>
-	</div>
 	<!--  联系人列表查询部分  end-->
 </div>
 <!-- 创建联系人模态框 -->
@@ -144,12 +156,6 @@
 							</select>
 						</div>
 					</div>
-					<%--<div class="form-group">
-						<label for="new_lkm_gender" class="col-sm-2 control-label">性别</label>
-						<div class="col-sm-10">
-							<input type="text" class="form-control" id="new_lkm_gender" placeholder="性别" name="lkm_gender" />
-						</div>
-					</div>--%>
                     <div class="form-group">
                         <label for="new_lkm_gender" class="col-sm-2 control-label">性别</label>
                         <div class="col-sm-10">
@@ -240,12 +246,6 @@
                             </select>
                         </div>
                     </div>
-                    <%--<div class="form-group">
-                        <label for="edit_lkm_gender" class="col-sm-2 control-label">性别</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="edit_lkm_gender" placeholder="性别" name="lkm_gender" />
-                        </div>
-                    </div>--%>
                     <div class="form-group">
                         <label for="edit_lkm_gender" class="col-sm-2 control-label">性别</label>
                         <div class="col-sm-10">
@@ -314,6 +314,10 @@
 <script src="<%=basePath%>js/dataTables.bootstrap.min.js"></script>
 <!-- Custom Theme JavaScript -->
 <script src="<%=basePath%>js/sb-admin-2.js"></script>
+<%--提示框--%>
+<script src="../../js/spop.min.js"></script>
+<%--美化confirm--%>
+<script src="../../js/flavr.min.js"></script>
 <!-- 编写js代码 -->
 <script type="text/javascript">
 //清空新建联系人窗口中的数据
@@ -333,11 +337,25 @@
 	$.post("<%=basePath%>linkman/create.action",
 	$("#new_linkman_form").serialize(),function(data){
 	        if(data =="OK"){
-	            alert("联系人创建成功！");
-	            window.location.reload();
+                spop({
+                    template: '<h4 class="spop-title">联系人创建成功！</h4>',
+                    position: 'top-center',
+                    style: 'success',
+                    autoclose: 1000,
+                    onClose : function(){
+                        window.location.reload();
+                    }
+                });
 	        }else{
-	            alert("联系人创建失败！");
-	            window.location.reload();
+                spop({
+                    template: '<h4 class="spop-title">联系人创建失败！</h4>',
+                    position: 'top-center',
+                    style: 'error',
+                    autoclose: 1000,
+                    onClose : function(){
+                        window.location.reload();
+                    }
+                });
 	        }
 	    });
 	}
@@ -368,7 +386,7 @@
                 $("#edit_mobile").val(data.lkm_mobile);
                 $("#edit_position").val(data.lkm_position);
                 $("#edit_memo").val(data.lkm_memo);
-	            
+
 	        }
 	    });
 	}
@@ -376,43 +394,67 @@
 	function updateLinkman() {
 		$.post("<%=basePath%>linkman/update.action",$("#edit_linkman_form").serialize(),function(data){
 			if(data =="OK"){
-				alert("联系人信息更新成功！");
-				window.location.reload();
+                spop({
+                    template: '<h4 class="spop-title">联系人信息更新成功！</h4>',
+                    position: 'top-center',
+                    style: 'success',
+                    autoclose: 1000,
+                    onClose : function(){
+                        window.location.reload();
+                    }
+                });
 			}else{
-				alert("联系人信息更新失败！");
-				window.location.reload();
+                spop({
+                    template: '<h4 class="spop-title">联系人信息更新失败！</h4>',
+                    position: 'top-center',
+                    style: 'error',
+                    autoclose: 1000,
+                    onClose : function(){
+                        window.location.reload();
+                    }
+                });
 			}
 		});
 	}
 	// 删除联系人
 	function deleteLinkman(id) {
-	    if(confirm('确实要删除该联系人吗?')) {
+        new $.flavr({
+            modal       : false, //关闭模态
+            content     : '确定删除该联系人吗 ？',
+            dialog      : 'confirm',
+            onConfirm   : function( $container ){
 	        $.ajax({
                 type:"post",
                 url:"${pageContext.request.contextPath}/linkman/delete.action",
                 data:{"id":id},
                 success:function (data) {
                     if(data=="OK"){
-                        alert("联系人删除成功！");
-                        window.location.reload();
+                        spop({
+                            template: '<h4 class="spop-title">联系人删除成功！</h4>',
+                            position: 'top-center',
+                            style: 'success',
+                            autoclose: 1000,
+                            onClose : function(){
+                                window.location.reload();
+                            }
+                        });
                     }else {
-                        alert("删除联系人失败！");
-                        window.location.reload();
+                        spop({
+                            template: '<h4 class="spop-title">联系人删除失败！</h4>',
+                            position: 'top-center',
+                            style: 'error',
+                            autoclose: 1000,
+                            onClose : function(){
+                                window.location.reload();
+                            }
+                        });
                     }
                 }
             })
-            //ajax的不同写法
-	        /**$.post("${pageContext.request.contextPath}linkman/delete.action",{"id":id},
-            function(data){
-	            if(data =="OK"){
-	                alert("联系人删除成功！");
-	                window.location.reload();
-	            }else{
-	                alert("删除联系人失败！");
-	                window.location.reload();
-	            }
-	        });*/
-	    }
+            },
+            onCancel    : function( $container ){
+            }
+        })
 	}
 </script>
 </body>

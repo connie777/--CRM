@@ -22,7 +22,7 @@
 	<div id="page-wrapper">
 		<div class="row">
 			<div class="col-lg-12">
-				<h1 class="page-header">客户管理</h1>
+				<h1 class="page-header">客户信息管理</h1>
 			</div>
 			<!-- /.col-lg-12 -->
 		</div>
@@ -76,10 +76,16 @@
 				</form>
 			</div>
 		</div>
-		<a href="#" class="btn btn-primary" data-toggle="modal" 
-		           data-target="#newCustomerDialog" onclick="clearCustomer()">
-            <i class="fa fa-plus fa-lg" style="margin-right: 5px"></i>
-            新建</a>
+        <%--权限管理--%>
+        <c:if test="${USER_SESSION.user_level != 3}">
+            <a href="#" class="btn btn-primary" data-toggle="modal"
+                       data-target="#newCustomerDialog" onclick="clearCustomer()" style="margin-bottom: 4px">
+                <i class="fa fa-plus fa-lg" style="margin-right: 5px"></i>
+                新建</a>
+        </c:if>
+        <a href="${pageContext.request.contextPath}/excelExport/exportCustomer.action" class="btn btn-primary"  style="margin-bottom: 4px;margin-left: 6px;">
+            <i class="fa fa-share fa-lg" style="margin-right: 5px"></i>
+            Excel导出</a>
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="panel panel-default">
@@ -88,28 +94,32 @@
 					<table class="table table-bordered table-striped">
 						<thead>
 							<tr>
-								<th>编号</th>
+								<%--<th>编号</th>--%>
 								<th>客户名称</th>
 								<th>客户来源</th>
 								<th>客户所属行业</th>
 								<th>客户级别</th>
 								<th>固定电话</th>
+                                <c:if test="${USER_SESSION.user_level!=3}">
 								<th>操作</th>
+                                </c:if>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody style="text-align: center">
 							<c:forEach items="${page.rows}" var="row">
 								<tr>
-									<td>${row.cust_id}</td>
+									<%--<td>${row.cust_id}</td>--%>
 									<td>${row.cust_name}</td>
 									<td>${row.cust_source}</td>
 									<td>${row.cust_industry}</td>
 									<td>${row.cust_level}</td>
 								    <td>${row.cust_phone}</td>
+                                    <c:if test="${USER_SESSION.user_level!=3}">
 									<td>
 										<a href="#" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#customerEditDialog" onclick= "editCustomer(${row.cust_id})"><i class="fa fa-edit fa-lg"></i>修改</a>
 										<a href="#" class="btn btn-danger btn-xs" onclick="deleteCustomer(${row.cust_id})"><i class="fa fa-trash-o fa-lg"></i>删除</a>
 									</td>
+                                        </c:if>
 								</tr>
 							</c:forEach>
 						</tbody>
@@ -184,6 +194,19 @@
 							</select>
 						</div>
 					</div>
+                    <div class="form-group">
+                        <label for="new_cust_user" style="float:left;padding:7px 29px 0 27px;">负责人</label>
+                        <div class="col-sm-10">
+                            <select	class="form-control" id="new_cust_user" name="cust_user_id">
+                                <option value="">--请选择--</option>
+                                <c:forEach items="${users}" var="item">
+                                    <option value="${item.user_id}">
+                                            ${item.user_name }
+                                    </option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                    </div>
 					<%--<div class="form-group">
 						<label for="new_linkMan" class="col-sm-2 control-label">联系人</label>
 						<div class="col-sm-10">
@@ -278,6 +301,19 @@
 							</select>
 						</div>
 					</div>
+                    <div class="form-group">
+                        <label for="edit_cust_user" style="float:left;padding:7px 29px 0 27px;">负责人</label>
+                        <div class="col-sm-10">
+                            <select	class="form-control" id="edit_cust_user" name="cust_user_id">
+                                <option value="">--请选择--</option>
+                                <c:forEach items="${users}" var="item">
+                                    <option value="${item.user_id}">
+                                            ${item.user_name }
+                                    </option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                    </div>
 					<%--<div class="form-group">
 						<label for="edit_linkMan" class="col-sm-2 control-label">联系人</label>
 						<div class="col-sm-10">
@@ -329,14 +365,20 @@
 <script src="<%=basePath%>js/dataTables.bootstrap.min.js"></script>
 <!-- Custom Theme JavaScript -->
 <script src="<%=basePath%>js/sb-admin-2.js"></script>
+<%--提示框--%>
+<script src="../../js/spop.min.js"></script>
+<%--美化confirm--%>
+<script src="../../js/flavr.min.js"></script>
 <!-- 编写js代码 -->
 <script type="text/javascript">
-//清空新建客户窗口中的数据
+
+    //清空新建客户窗口中的数据
 	function clearCustomer() {
 	    $("#new_customerName").val("");
-	    $("#new_customerFrom").val("")
-	    $("#new_custIndustry").val("")
-	    $("#new_custLevel").val("")
+	    $("#new_customerFrom").val("");
+	    $("#new_custIndustry").val("");
+	    $("#new_custLevel").val("");
+	    $("#new_cust_user").val("");
 	    /*$("#new_linkMan").val("");*/
 	    $("#new_phone").val("");
 	    /*$("#new_mobile").val("");*/
@@ -348,11 +390,25 @@
 	$.post("<%=basePath%>customer/create.action",
 	$("#new_customer_form").serialize(),function(data){
 	        if(data =="OK"){
-	            alert("客户创建成功！");
-	            window.location.reload();
+                spop({
+                    template: '<h4 class="spop-title">客户创建成功！</h4>',
+                    position: 'top-center',
+                    style: 'success',
+                    autoclose: 1000,
+                    onClose : function(){
+                        window.location.reload();
+                    }
+                });
 	        }else{
-	            alert("客户创建失败！");
-	            window.location.reload();
+                spop({
+                    template: '<h4 class="spop-title">客户创建失败！</h4>',
+                    position: 'top-center',
+                    style: 'error',
+                    autoclose: 1000,
+                    onClose : function(){
+                        window.location.reload();
+                    }
+                });
 	        }
 	    });
 	}
@@ -365,9 +421,10 @@
 	        success:function(data) {
 	            $("#edit_cust_id").val(data.cust_id);
 	            $("#edit_customerName").val(data.cust_name);
-	            $("#edit_customerFrom").val(data.cust_source)
-	            $("#edit_custIndustry").val(data.cust_industry)
-	            $("#edit_custLevel").val(data.cust_level)
+	            $("#edit_customerFrom").val(data.cust_source);
+	            $("#edit_custIndustry").val(data.cust_industry);
+	            $("#edit_custLevel").val(data.cust_level);
+	            $("#edit_cust_user").val(data.cust_user_id);
 	            /*$("#edit_linkMan").val(data.cust_linkman);*/
 	            $("#edit_phone").val(data.cust_phone);
 	            /*$("#edit_mobile").val(data.cust_mobile);*/
@@ -381,28 +438,64 @@
 	function updateCustomer() {
 		$.post("<%=basePath%>customer/update.action",$("#edit_customer_form").serialize(),function(data){
 			if(data =="OK"){
-				alert("客户信息更新成功！");
-				window.location.reload();
+                spop({
+                    template: '<h4 class="spop-title">客户信息更新成功！</h4>',
+                    position: 'top-center',
+                    style: 'success',
+                    autoclose: 1000,
+                    onClose : function(){
+                        window.location.reload();
+                    }
+                });
 			}else{
-				alert("客户信息更新失败！");
-				window.location.reload();
+                spop({
+                    template: '<h4 class="spop-title">客户信息更新失败！</h4>',
+                    position: 'top-center',
+                    style: 'error',
+                    autoclose: 1000,
+                    onClose : function(){
+                        window.location.reload();
+                    }
+                });
 			}
 		});
 	}
 	// 删除客户
 	function deleteCustomer(id) {
-	    if(confirm('确实要删除该客户吗?')) {
-	$.post("<%=basePath%>customer/delete.action",{"id":id},
-	function(data){
-	            if(data =="OK"){
-	                alert("客户删除成功！");
-	                window.location.reload();
-	            }else{
-	                alert("删除客户失败！");
-	                window.location.reload();
-	            }
-	        });
-	    }
+	    new $.flavr({
+            modal       : false, //关闭模态
+            content     : '确定删除该客户吗 ？',
+            dialog      : 'confirm',
+            onConfirm   : function( $container ){
+                $.post("<%=basePath%>customer/delete.action",{"id":id},
+                    function(data){
+                        if(data =="OK"){
+                            spop({
+                                template: '<h4 class="spop-title">客户删除成功！</h4>',
+                                position: 'top-center',
+                                style: 'success',
+                                autoclose: 1000,
+                                onClose : function(){
+                                    window.location.reload();
+                                }
+                            });
+                        }else{
+                            spop({
+                                template: '<h4 class="spop-title">客户删除失败！</h4>',
+                                position: 'top-center',
+                                style: 'error',
+                                autoclose: 1000,
+                                onClose : function(){
+                                    window.location.reload();
+                                }
+                            });
+                        }
+                    });
+                return false;
+            },
+            onCancel    : function( $container ){
+            }
+        })
 	}
 </script>
 </body>
