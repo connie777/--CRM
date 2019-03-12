@@ -1,6 +1,5 @@
 package cn.edu.sdju.yyh.dao;
 import cn.edu.sdju.yyh.po.BaseDict;
-
 import java.util.List;
 
 /**

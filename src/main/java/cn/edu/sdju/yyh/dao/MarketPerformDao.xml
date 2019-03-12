@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.sdju.yyh.dao.MarketPerformDao">
+    <!--SQL片段  -->
+    <sql id="selectMarketPerformListWhere">
+        <where>
+	       <if test="perform_user_id != null" >
+               perform_user_id =#{perform_user_id}
+	       </if>
+	       <if test="perform_date != null" >
+	        and perform_date = #{perform_date}
+	       </if>
+
+        </where>
+    </sql>
+<!-- 查询营销业绩  -->
+	<select id="selectMarketPerformList" parameterType="marketPerform"
+                                           resultType="marketPerform">
+		SELECT
+              perform_id,
+              perform_date,
+              perform_user_id,
+              perform_total_amount,
+              u.user_name as perform_user_name
+		FROM
+			market_perform p
+        LEFT JOIN sys_user u
+        ON p.perform_user_id=u.user_id
+		<include refid="selectMarketPerformListWhere"/>
+        order by perform_date asc
+        <!-- 执行分页查询 -->
+        <if test="start_index !=null and rows != null">
+
+            LIMIT #{start_index},#{rows}
+        </if>
+	</select>
+	<!-- 查询营销业绩总数 -->
+	<select id="selectMarketPerformCount" resultType="Integer">
+		select count(*) from market_perform
+		<include refid="selectMarketPerformListWhere"/>
+	</select>	
+	
+	<!-- 添加营销业绩 -->
+	<insert id="createMarketPerform" parameterType="marketPerform">
+	    insert into market_perform(
+	    perform_user_id,
+	    perform_date,
+	    perform_total_amount)
+	             values(#{perform_user_id},
+	                    #{perform_date},
+	                    #{perform_total_amount}
+	            )
+	</insert>
+	<!-- 根据id获取营销业绩 -->
+	<select id="getMarketPerformById" parameterType="Integer"
+	resultType="marketPerform">
+	    select * from market_perform where perform_id = #{perform_id}
+	</select>
+	<!-- 更新营销业绩 -->
+	<update id="updateMarketPerform" parameterType="marketPerform">
+	    update market_perform
+	    <set>
+	        <if test="perform_user_id!=null">
+                perform_user_id=#{perform_user_id},
+	        </if>
+	        <if test="perform_date!=null">
+                perform_date=#{perform_date},
+	        </if>
+	        <if test="perform_total_amount!=null">
+                perform_total_amount=#{perform_total_amount},
+	        </if>
+	    </set>
+	    where perform_id=#{perform_id}
+	</update>
+	<!-- 删除营销业绩 -->
+	<delete id="deleteMarketPlan" parameterType="Integer">
+	    delete from market_perform where perform_id=#{perform_id}
+	</delete>
+
+    <!--按月份统计业绩-->
+    <select id="countByMonth" resultType="performResult">
+        select perform_date as month,sum(perform_total_amount) as totalAmount
+        from market_perform
+        where perform_date >= #{start_month}
+        and perform_date &lt;= #{end_month}
+        group by perform_date
+        order by perform_date asc
+        limit 10
+    </select>
+
+    <!--统计销售总额-->
+    <select id="getTotalSellAmount" resultType="performResult">
+        select sum(perform_total_amount) as total_sell_amount
+        from market_perform
+    </select>
+
+    <!--统计某个销售的业绩-->
+    <select id="getSellAmountByUserId" resultType="performResult">
+        select sum(perform_total_amount) as total_sell_amount
+        from market_perform
+        WHERE perform_user_id=#{user_id}
+    </select>
+</mapper>

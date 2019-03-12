@@ -1,10 +1,8 @@
 package cn.edu.sdju.yyh.dao;
 
-import cn.edu.sdju.yyh.po.Linkman;
 import cn.edu.sdju.yyh.po.Visit;
 
 import java.util.List;
-
 public interface VisitDao {
 
     // 拜访信息列表

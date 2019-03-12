@@ -1,8 +1,8 @@
 package cn.edu.sdju.yyh.dao;
 
 import cn.edu.sdju.yyh.po.Linkman;
-import java.util.List;
 
+import java.util.List;
 public interface LinkmanDao {
 
     // 联系人列表

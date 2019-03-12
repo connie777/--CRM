@@ -41,4 +41,10 @@
         set user_password = #{user_password}
         where user_code = #{user_code}
     </update>
+    
+    <select id="selectAllSeller" resultType="user">
+        select *
+        from sys_user
+        where user_level = '3'
+    </select>
 </mapper>

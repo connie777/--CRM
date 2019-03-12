@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.sdju.yyh.dao.MarketPlanDao">
+    <!--SQL片段  -->
+    <sql id="selectMarketPlanListWhere">
+        <where>
+	       <if test="plan_name != null" >
+                plan_name like "%"#{plan_name}"%"
+	       </if>
+	       <if test="plan_principal != null" >
+	        and plan_principal = #{plan_principal}
+	       </if>
+
+        </where>
+    </sql>
+<!-- 查询营销计划  -->
+	<select id="selectMarketPlanList" parameterType="marketPlan"
+                                           resultType="marketPlan">
+		SELECT
+			plan_id,
+            plan_name,
+            plan_content,
+			plan_cost,
+            plan_profits,
+            plan_principal,
+            plan_start_date,
+            plan_end_date,
+            plan_remark,
+            u.user_name plan_user_name
+		FROM
+			market_plan p
+        LEFT JOIN sys_user u
+        on p.plan_principal=u.user_id
+		<include refid="selectMarketPlanListWhere"/>
+        <!-- 执行分页查询 -->
+        <if test="start_index !=null and rows != null">
+
+            LIMIT #{start_index},#{rows}
+        </if>
+	</select>
+	<!-- 查询营销计划总数 -->
+	<select id="selectMarketPlanCount" resultType="Integer">
+		select count(*) from market_plan
+		<include refid="selectMarketPlanListWhere"/>
+	</select>	
+	
+	<!-- 添加营销计划 -->
+	<insert id="createMarketPlan" parameterType="marketPlan">
+	    insert into market_plan(
+                        plan_name,
+                         plan_content,
+                          plan_cost,
+                           plan_profits,
+                            plan_start_date,
+                             plan_end_date,
+                              plan_principal,
+                               plan_remark
+	             )
+	             values(#{plan_name},
+	                    #{plan_content},
+	                    #{plan_cost},
+	                    #{plan_profits},
+	                    #{plan_start_date},
+	                    #{plan_end_date},
+	                    #{plan_principal},
+	                    #{plan_remark}
+	            )
+	</insert>
+	<!-- 根据id获取营销计划信息 -->
+	<select id="getMarketPlanById" parameterType="Integer"
+	resultType="marketPlan">
+	    select * from market_plan where plan_id = #{plan_id}
+	</select>
+	<!-- 更新营销计划 -->
+	<update id="updateMarketPlan" parameterType="marketPlan">
+	    update market_plan
+	    <set>
+	        <if test="plan_name!=null">
+                plan_name=#{plan_name},
+	        </if>
+	        <if test="plan_content!=null">
+                plan_content=#{plan_content},
+	        </if>
+	        <if test="plan_cost!=null">
+                plan_cost=#{plan_cost},
+	        </if>
+	        <if test="plan_profits!=null">
+                plan_profits=#{plan_profits},
+	        </if>
+	        <if test="plan_start_date!=null">
+                plan_start_date=#{plan_start_date},
+	        </if>
+	        <if test="plan_end_date!=null">
+                plan_end_date=#{plan_end_date},
+	        </if>
+	        <if test="plan_principal!=null">
+                plan_principal=#{plan_principal},
+	        </if>
+	        <if test="plan_remark!=null">
+                plan_remark=#{plan_remark}
+	        </if>
+	    </set>
+	    where plan_id=#{plan_id}
+	</update>
+	<!-- 删除营销计划 -->
+	<delete id="deleteMarketPlan" parameterType="Integer">
+	    delete from market_plan where plan_id=#{plan_id}
+	</delete>
+
+</mapper>

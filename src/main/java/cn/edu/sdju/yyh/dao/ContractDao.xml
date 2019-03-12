@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.sdju.yyh.dao.ContractDao">
+    <!--SQL片段  -->
+    <sql id="selectContractListWhere">
+        <where>
+            <if test="contract_id != null" >
+                and contract_id = #{contract_id}
+            </if>
+	       <if test="contract_cust_name != null" >
+               and contract_cust_name like "%"#{contract_cust_name}"%"
+	       </if>
+
+
+        </where>
+    </sql>
+<!-- 查询合同  -->
+	<select id="selectContractList" parameterType="contract"
+                                           resultType="contract">
+		SELECT *
+		FROM contract
+		<include refid="selectContractListWhere"/>
+        <!-- 执行分页查询 -->
+        <if test="start_index !=null and rows != null">
+
+            LIMIT #{start_index},#{rows}
+        </if>
+	</select>
+	<!-- 查询合同总数 -->
+	<select id="selectContractListCount" resultType="Integer">
+		select count(*) from contract
+		<include refid="selectContractListWhere"/>
+	</select>
+	
+	<!-- 添加合同 -->
+	<insert id="createContract" parameterType="contract">
+	    insert into contract(
+                    contract_id,
+                    contract_cust_name,
+                    contract_date,
+                    contract_img
+	             )
+	             values(#{contract_id},
+	                    #{contract_cust_name},
+	                    #{contract_date},
+	                    #{contract_img}
+	            )
+	</insert>
+	<!-- 根据id获取合同信息 -->
+	<select id="getContractById" parameterType="String"
+	resultType="contract">
+	    select * from contract where contract_id = #{contract_id}
+	</select>
+	<!-- 更新营销计划 -->
+	<!--<update id="updateMarketPlan" parameterType="marketPlan">
+	    update market_plan
+	    <set>
+	        <if test="plan_name!=null">
+                plan_name=#{plan_name},
+	        </if>
+	        <if test="plan_content!=null">
+                plan_content=#{plan_content},
+	        </if>
+	        <if test="plan_cost!=null">
+                plan_cost=#{plan_cost},
+	        </if>
+	        <if test="plan_profits!=null">
+                plan_profits=#{plan_profits},
+	        </if>
+	        <if test="plan_start_date!=null">
+                plan_start_date=#{plan_start_date},
+	        </if>
+	        <if test="plan_end_date!=null">
+                plan_end_date=#{plan_end_date},
+	        </if>
+	        <if test="plan_principal!=null">
+                plan_principal=#{plan_principal},
+	        </if>
+	        <if test="plan_remark!=null">
+                plan_remark=#{plan_remark}
+	        </if>
+	    </set>
+	    where plan_id=#{plan_id}
+	</update>-->
+	<!-- 删除营销计划 -->
+	<!--<delete id="deleteMarketPlan" parameterType="Integer">
+	    delete from market_plan where plan_id=#{plan_id}
+	</delete>-->
+
+</mapper>

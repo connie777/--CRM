@@ -5,9 +5,15 @@
     <!--SQL片段  &lt;表示<   -->
     <sql id="selectVisitListWhere">
         <where>
+            <if test="custIds != null">
+                <foreach collection="custIds" open=" visit_cust_id in(" separator="," close=")" index="index" item="custIds">
+                    #{custIds}
+                </foreach>
+            </if>
 	       <if test="visit_cust_id != null" >
-               visit_cust_id = #{visit_cust_id}
+               and visit_cust_id = #{visit_cust_id}
 	       </if>
+
 	       <if test="start_date != null " >
 	        and visit_time >= #{start_date}
 	       </if>
@@ -28,9 +34,18 @@
             visit_time,
             visit_addr,
             visit_detail,
-            visit_nexttime
+            visit_nexttime,
+            u.user_name visit_user_name,
+            c.cust_name visit_cust_name,
+            l.lkm_name visit_lkm_name
 		FROM
-			visit
+			visit v
+        LEFT JOIN sys_user u
+        on v.visit_user_id=u.user_id
+        LEFT JOIN customer c
+        ON v.visit_cust_id=c.cust_id
+        LEFT JOIN linkman l
+        ON v.visit_lkm_id=l.lkm_id
 		<include refid="selectVisitListWhere"/>
         <!-- 执行分页查询 -->
         <if test="start_index !=null and rows != null">

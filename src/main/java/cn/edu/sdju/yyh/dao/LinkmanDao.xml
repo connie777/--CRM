@@ -5,8 +5,13 @@
     <!--SQL片段  -->
     <sql id="selectLinkmanListWhere">
         <where>
+            <if test="cust_ids != null">
+                <foreach collection="cust_ids" open=" lkm_cust_id in(" separator="," close=")" index="index" item="cust_ids">
+                    #{cust_ids}
+                </foreach>
+            </if>
 	       <if test="lkm_name != null" >
-               lkm_name like "%"#{lkm_name}"%"
+               and lkm_name like "%"#{lkm_name}"%"
 	       </if>
 	       <if test="lkm_gender != null" >
 	        and lkm_gender = #{lkm_gender}
@@ -30,9 +35,12 @@
             lkm_email,
             lkm_qq,
             lkm_position,
-            lkm_memo
+            lkm_memo,
+            c.cust_name lkm_cust_name
 		FROM
-			linkman
+			linkman l
+        LEFT JOIN customer c
+        on l.lkm_cust_id=c.cust_id
 		<include refid="selectLinkmanListWhere"/>
         <!-- 执行分页查询 -->
         <if test="start_index !=null and rows != null">

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
      "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.edu.sdju.yyh.dao.CustomerDao">
-    <!--SQL片段  -->
+    <!--条件查询SQL片段  -->
     <sql id="selectCustomerListWhere">
         <where>
 	       <if test="cust_name != null" >
@@ -17,55 +17,63 @@
 	       <if test="cust_level != null" >
 	        and cust_level = #{cust_level}
 	       </if>
+            <if test="cust_user_id != null">
+                and cust_user_id = #{cust_user_id}
+            </if>
         </where>
     </sql>
 	<!-- 查询客户列表  -->
 	<select id="selectCustomerList" parameterType="customer" 
                                            resultType="customer">
-		SELECT
-			cust_id,/*客户Id*/
-			cust_name,/*客户名称*/
-			cust_user_id,/*负责人id*/
-			cust_create_id,/*创建人id*/
-			b.dict_item_name cust_source,/*客户来源*/
-			c.dict_item_name cust_industry,/*客户行业*/
-			d.dict_item_name cust_level,/*客户级别*/
-			cust_linkman,/*联系人*/
-			cust_phone,/*座机*/
-			cust_mobile,/*手机*/
-            cust_zipcode,
-            cust_address
-			/*cust_createtime创建时间*/
-		FROM
-			customer a
-		LEFT JOIN (
-			SELECT
-				dict_id,
-				dict_item_name
-			FROM
-				base_dict
+        SELECT
+        cust_id,/*客户Id*/
+        cust_name,/*客户名称*/
+        cust_user_id,/*负责人id*/
+        cust_create_id,/*创建人id*/
+        b.dict_item_name cust_source,/*客户来源*/
+        c.dict_item_name cust_industry,/*客户行业*/
+        d.dict_item_name cust_level,/*客户级别*/
+        u.user_name cust_user_name,
+        cust_linkman,/*联系人*/
+        cust_phone,/*座机*/
+        cust_mobile,/*手机*/
+        cust_zipcode,
+        cust_address
+        /*cust_createtime创建时间*/
+        FROM
+        customer a
+        LEFT JOIN (
+        SELECT
+        dict_id,
+        dict_item_name
+        FROM
+        base_dict
         WHERE
-				dict_type_code = '002' /*类别是客户来源*/
-		) b ON a.cust_source = b.dict_id
-		LEFT JOIN (
-			SELECT
-				dict_id,
-				dict_item_name
-			FROM
-				base_dict
+        dict_type_code = '002' /*类别是客户来源*/
+        ) b ON a.cust_source = b.dict_id
+        LEFT JOIN (
+        SELECT
+        dict_id,
+        dict_item_name
+        FROM
+        base_dict
         WHERE
-				dict_type_code = '001' /*类别是所属行业*/
-		) c ON a.cust_industry = c.dict_id
-		LEFT JOIN (
-			SELECT
-				dict_id,
-				dict_item_name
-			FROM
-				base_dict
+        dict_type_code = '001' /*类别是所属行业*/
+        ) c ON a.cust_industry = c.dict_id
+        LEFT JOIN (
+        SELECT
+        dict_id,
+        dict_item_name
+        FROM
+        base_dict
         WHERE
-				dict_type_code = '006' /*类别是客户级别*/
-		) d ON a.cust_level = d.dict_id
-		<include refid="selectCustomerListWhere"/>
+        dict_type_code = '006' /*类别是客户级别*/
+        ) d ON a.cust_level = d.dict_id
+        LEFT JOIN (
+        SELECT user_id,user_name
+        FROM sys_user
+        ) u ON a.cust_user_id = u.user_id
+        <include refid="selectCustomerListWhere"/>
 		<!-- 执行分页查询 -->
 		<if test="start !=null and rows != null">
 			limit #{start},#{rows}
@@ -87,6 +95,7 @@
 	                     cust_source,
 	                     cust_industry,
 	                     cust_level,
+	                     cust_user_id,
 	                     cust_linkman,
 	                     cust_phone,
 	                     cust_mobile,
@@ -99,6 +108,7 @@
 	                    #{cust_source},
 	                    #{cust_industry},
 	                    #{cust_level},
+	                    #{cust_user_id},
 	                    #{cust_linkman},
 	                    #{cust_phone},
 	                    #{cust_mobile},
@@ -133,6 +143,9 @@
 	        <if test="cust_level!=null">
 	            cust_level=#{cust_level},
 	        </if>
+            <if test="cust_user_id!=null">
+                cust_user_id=#{cust_user_id},
+            </if>
 	        <if test="cust_linkman!=null">
 	            cust_linkman=#{cust_linkman},
 	        </if>

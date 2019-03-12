@@ -26,4 +26,7 @@ public interface UserDao {
     public int insertUser(User user);
 
     public int updateUser(User user);
+
+    //查出所有营销员
+    public List<User> selectAllSeller();
 }
