@@ -1,13 +1,10 @@
 package cn.edu.sdju.yyh.controller;
-import java.util.List;
-
-import javax.servlet.http.HttpSession;
-
 import cn.edu.sdju.yyh.po.BaseDict;
 import cn.edu.sdju.yyh.po.Customer;
 import cn.edu.sdju.yyh.po.User;
 import cn.edu.sdju.yyh.service.BaseDictService;
 import cn.edu.sdju.yyh.service.CustomerService;
+import cn.edu.sdju.yyh.service.UserService;
 import cn.edu.sdju.yyh.utils.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpSession;
+import java.util.List;
 
 
 /**
@@ -28,6 +28,8 @@ public class CustomerController {
 	private CustomerService customerService;
 	@Autowired
 	private BaseDictService baseDictService;
+	@Autowired
+    private UserService userService;
 	// 客户来源
 	@Value("${customer.from.type}")
 	private String FROM_TYPE;
@@ -44,12 +46,17 @@ public class CustomerController {
 	public String list(@RequestParam(defaultValue="1")Integer page,
 			@RequestParam(defaultValue="10")Integer rows, 
 			String custName, String custSource, String custIndustry,
-			String custLevel, Model model) {
-		// 条件查询所有客户
+			String custLevel, Model model,HttpSession session) {
+	    //获取登陆的用户信息
+	    User user=(User)session.getAttribute("USER_SESSION");
+		// 条件查询所有客户（user为登陆的用户信息）
 		Page<Customer> customers = customerService
 				.findCustomerList(page, rows, custName, 
-                                        custSource, custIndustry,custLevel);
+                                        custSource, custIndustry,custLevel,user);
 		model.addAttribute("page", customers);
+		//查询所有销售
+        List<User> userList=this.userService.selectAllSeller();
+        model.addAttribute("users",userList);
 		// 客户来源
 		List<BaseDict> fromType = baseDictService
 				.findBaseDictByTypeCode(FROM_TYPE);
@@ -80,11 +87,6 @@ public class CustomerController {
 	    User user = (User) session.getAttribute("USER_SESSION");
 	    // 将当前用户id存储在客户对象中
 	    customer.setCust_create_id(user.getUser_id());
-	    /*// 创建Date对象
-	    Date date = new Date();
-	    // 得到一个Timestamp格式的时间，存入mysql中的时间格式“yyyy/MM/dd HH:mm:ss”
-	    Timestamp timeStamp = new Timestamp(date.getTime());
-	    customer.setCust_createtime(timeStamp);*/
 	    // 执行Service层中的创建方法，返回的是受影响的行数
 	    int rows = customerService.createCustomer(customer);
 	    if(rows > 0){

@@ -1,7 +1,9 @@
 package cn.edu.sdju.yyh.controller;
 
+import cn.edu.sdju.yyh.dao.CustomerDao;
 import cn.edu.sdju.yyh.po.Customer;
 import cn.edu.sdju.yyh.po.Linkman;
+import cn.edu.sdju.yyh.po.User;
 import cn.edu.sdju.yyh.service.CustomerService;
 import cn.edu.sdju.yyh.service.LinkmanService;
 import cn.edu.sdju.yyh.utils.Page;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 
@@ -30,6 +33,8 @@ public class LinkmanController {
     private LinkmanService linkmanService;
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private CustomerDao customerDao;
     /**
      *  联系人列表
      */
@@ -37,12 +42,31 @@ public class LinkmanController {
     public String list(@RequestParam(defaultValue="1")Integer page,
                        @RequestParam(defaultValue="10")Integer rows,
                        String lkm_name, String lkm_gender,
-                       Integer lkm_cust_id, Model model) {
-        Page<Linkman> linkmans=linkmanService.findLinkmanList(page, rows,
-                lkm_name, lkm_gender, lkm_cust_id);
-        List<Customer> customerList=customerService.showCustomer(new Customer());
+                       Integer lkm_cust_id, Model model, HttpSession session) {
+        //获取登陆的用户信息
+        User user=(User)session.getAttribute("USER_SESSION");
+        List<Customer> customerList;
+        Page<Linkman> linkmans;
+        //如果是销售登陆
+        if(user.getUser_level()==3){
+            //查出该销售拥有的客户资源
+            Customer customer=new Customer();
+            customer.setCust_user_id(user.getUser_id());
+            customerList=this.customerDao.selectCustomerList(customer);
+            linkmans=linkmanService.findLinkmanList(page, rows,
+                    lkm_name, lkm_gender, lkm_cust_id,customerList);
+        }else{
+            //管理登陆
+            customerList=this.customerDao.selectCustomerList(new Customer());
+            linkmans=linkmanService.findLinkmanList(page, rows,
+                    lkm_name, lkm_gender, lkm_cust_id,null);
+        }
+        /*List<Customer> customerList=customerService.showCustomer(new Customer());*/
         model.addAttribute("page",linkmans);
         model.addAttribute("cusList",customerList);
+        model.addAttribute("lkm_name",lkm_name);
+        model.addAttribute("lkm_gender",lkm_gender);
+        model.addAttribute("lkm_cust_id",lkm_cust_id);
         return "linkman";
     }
 

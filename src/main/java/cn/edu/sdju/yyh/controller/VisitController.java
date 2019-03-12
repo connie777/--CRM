@@ -1,5 +1,6 @@
 package cn.edu.sdju.yyh.controller;
 
+import cn.edu.sdju.yyh.dao.CustomerDao;
 import cn.edu.sdju.yyh.po.Customer;
 import cn.edu.sdju.yyh.po.Linkman;
 import cn.edu.sdju.yyh.po.User;
@@ -10,6 +11,7 @@ import cn.edu.sdju.yyh.service.UserService;
 import cn.edu.sdju.yyh.service.VisitService;
 import cn.edu.sdju.yyh.utils.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +41,8 @@ public class VisitController {
     @Autowired
     private UserService userService;
     @Autowired
+    private CustomerDao customerDao;
+    @Autowired
     private LinkmanService linkmanService;
 
     /**
@@ -46,15 +52,37 @@ public class VisitController {
     @RequestMapping(value = "/list.action",method = RequestMethod.GET)
     public String list(@RequestParam(defaultValue="1")Integer page,
                        @RequestParam(defaultValue="10")Integer rows,
-                       Date start_date,Date end_date,
-                       Integer visit_cust_id, Model model){
-        Page<Visit> visitPage=visitService.findVisitList(page,rows,visit_cust_id,start_date,end_date);
-        //查询出所有客户信息，用于回显
-        List<Customer> customers=customerService.showCustomer(new Customer());
-        List<User> users=userService.findAll();
+                       @DateTimeFormat(pattern = "yyyy-MM-dd")Date start_date,
+                       @DateTimeFormat(pattern = "yyyy-MM-dd")Date end_date,
+                       Integer visit_cust_id, Model model,
+                       HttpSession session){
+        //获取登陆的用户信息
+        User user=(User)session.getAttribute("USER_SESSION");
+        List<Customer> customerList;
+        Page<Visit> visitPage;
+        //如果是销售登陆
+        if(user.getUser_level()==3){
+            //查出该销售拥有的客户资源
+            Customer customer=new Customer();
+            customer.setCust_user_id(user.getUser_id());
+            customerList=this.customerDao.selectCustomerList(customer);
+            visitPage=visitService.findVisitList(page,rows,visit_cust_id,start_date,end_date,customerList);
+        }else{
+            //管理登陆
+            customerList=this.customerDao.selectCustomerList(new Customer());
+            visitPage=visitService.findVisitList(page,rows,visit_cust_id,start_date,end_date,null);
+        }
+        model.addAttribute("cusList",customerList);
         model.addAttribute("page",visitPage);
-        model.addAttribute("cusList",customers);
-        model.addAttribute("users",users);
+        model.addAttribute("cust_id",visit_cust_id);
+        if(start_date!=null) {
+            String startDate = new SimpleDateFormat("yyyy-MM-dd").format(start_date);
+            model.addAttribute("start_date", startDate);
+        }
+        if(end_date!=null) {
+            String endDate = new SimpleDateFormat("yyyy-MM-dd").format(end_date);
+            model.addAttribute("end_date", endDate);
+        }
         return "visit";
     }
 
