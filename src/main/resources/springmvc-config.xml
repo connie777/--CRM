@@ -63,5 +63,13 @@
         	<mvc:mapping path="/**" />
         	<bean class="cn.edu.sdju.yyh.interceptor.LoginInterceptor" />
     	</mvc:interceptor>
-	</mvc:interceptors>	
+	</mvc:interceptors>
+    <!-- 上传文件 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="utf-8"/>
+        <!-- 最大内存大小 -->
+        <property name="maxInMemorySize" value="10240"/>
+        <!-- 最大文件大小，-1为不限制大小 -->
+        <property name="maxUploadSize" value="-1"/>
+    </bean>
 </beans>
