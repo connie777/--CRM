@@ -73,7 +73,26 @@
 		}).blur(function() {
 			$('.forget-owl').removeClass('password');
 		});
+		var status=getUrlParam('status');
+		if(status=='0'){
+            spop({
+                template: '<h4 class="spop-title">您还未登录，请先登录哦！</h4>',
+                position: 'top-center',
+                style: 'info',
+                autoclose: 3000
+            })
+        }
 	});
+
+	//根据参数名获取url中的参数值
+	function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null){
+            return unescape(r[2]);
+        }
+        return null;
+    }
 	
 	function goto_register(){
 		$("#register-username").val("");
@@ -180,18 +199,10 @@
                                 },1000);
                             },
                             onClose : function(){
-                                window.location.href=getContextPath()+"/customer/list.action";
+                                //window.location.href=getContextPath()+"/customer/list.action";
+                                window.location.href=getContextPath()+"/dashboard/show.action";
                             }
                         });
-                        /*spop({
-                            template: '<h4 class="spop-title">登陆成功！</h4>',
-                            position: 'top-center',
-                            style: 'success',
-                            autoclose: 3000,
-                            onClose : function(){
-                                window.location.href=getContextPath()+"/customer/list.action";
-                            }
-                        });*/
                     }
                 }
             })
