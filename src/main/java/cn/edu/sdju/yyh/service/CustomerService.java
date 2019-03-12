@@ -1,15 +1,15 @@
 package cn.edu.sdju.yyh.service;
 
 import cn.edu.sdju.yyh.po.Customer;
+import cn.edu.sdju.yyh.po.User;
 import cn.edu.sdju.yyh.utils.Page;
 
 import java.util.List;
-
 public interface CustomerService {
 	// 查询客户列表
 	public Page<Customer> findCustomerList(Integer page, Integer rows,
                                            String custName, String custSource,
-                                           String custIndustry, String custLevel);
+                                           String custIndustry, String custLevel, User user);
 
 
 	public List<Customer> showCustomer(Customer customer);

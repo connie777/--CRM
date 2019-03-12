@@ -3,15 +3,13 @@ package cn.edu.sdju.yyh.service;
 import cn.edu.sdju.yyh.po.Customer;
 import cn.edu.sdju.yyh.po.Linkman;
 import cn.edu.sdju.yyh.utils.Page;
-import org.springframework.ui.Model;
 
 import java.util.List;
-
 public interface LinkmanService {
 	// 查询联系人列表
     Page<Linkman> findLinkmanList(Integer page, Integer rows,
-                                          String lkm_name, String lkm_gender,
-                                          Integer lkm_cust_id);
+                                  String lkm_name, String lkm_gender,
+                                  Integer lkm_cust_id, List<Customer> list);
 
     // 创建客户联系人
     int createLinkman(Linkman linkman);
