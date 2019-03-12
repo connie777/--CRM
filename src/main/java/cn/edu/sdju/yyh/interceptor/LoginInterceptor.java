@@ -1,11 +1,11 @@
 package cn.edu.sdju.yyh.interceptor;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import cn.edu.sdju.yyh.po.User;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * 登录拦截器
@@ -40,11 +40,9 @@ public class LoginInterceptor implements HandlerInterceptor {
 		if (user != null) {
 			return true;
 		}
-		// 不符合条件的给出提示信息，并转发到登录页面
-		request.setAttribute("msg", "您还没有登录，请先登录！");
-		request.getRequestDispatcher("/WEB-INF/html/login.html")
-		                                        .forward(request, response);
-		return false;
+		// 不符合条件的给出提示信息，并转发到登录页面(传递参数status用于信息提示）
+        response.sendRedirect(request.getContextPath()+"/login.action?status=0");
+ 		return false;
 	}
 	@Override
 	public void postHandle(HttpServletRequest request, 
