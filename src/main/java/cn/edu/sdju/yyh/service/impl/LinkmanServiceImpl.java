@@ -10,8 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,43 +39,44 @@ public class LinkmanServiceImpl implements LinkmanService {
                                          Integer rows,
                                          String lkm_name,
                                          String lkm_gender,
-                                         Integer lkm_cust_id
+                                         Integer lkm_cust_id,
+                                         List<Customer> list
                                          ) {
+
         // 创建联系人对象
         Linkman linkman=new Linkman();
         // 判断联系人名称
-        if(StringUtils.isNotBlank(lkm_name)){
+        if(StringUtils.isNotBlank(lkm_name)&&lkm_name!=""){
             linkman.setLkm_name(lkm_name);
         }
         // 判断联系人性别
-        if(StringUtils.isNotBlank(lkm_gender)){
+        if(StringUtils.isNotBlank(lkm_gender)&&lkm_gender!=""){
             linkman.setLkm_gender(lkm_gender);
         }
         // 判断联系人所属客户
         if(lkm_cust_id!=null){
             linkman.setLkm_cust_id(lkm_cust_id);
         }
+        List<Integer> cust_ids=new ArrayList<Integer>();
+        if(list!=null&&list.size()>0){
+            for(int i=0;i<list.size();i++){
+                cust_ids.add(list.get(i).getCust_id());
+            }
+            linkman.setCust_ids(cust_ids);
+        }
         // 从哪条数据开始查
-        linkman.setStart_index((page-1) * rows); ;
+        linkman.setStart_index((page-1) * rows);
         // 每页数
         linkman.setRows(rows);
         // 查询客户列表
-        List<Linkman> linkmens =
+        List<Linkman> linkmanList=
                 linkmanDao.selectLinkmanList(linkman);
-        //用于联系人列表中所属客户的显示(联系人数据表存的字段是id，但页面需要显示名字)
-        for (int i = 0; i < linkmens.size(); i++) {
-            Customer customer=new Customer();
-            customer=customerDao.getCustomerById(linkmens.get(i).getLkm_cust_id());
-            linkmens.get(i).setCustomer(customer);
-        }
-        /*//用于搜索条件的所属客户显示（需要显示所有客户）
-        List<Linkman> linkmanList=linkmanDao.selectLinkmanList(new Linkman());*/
         // 查询客户列表总记录数
         Integer count = linkmanDao.selectLinkmanListCount(linkman);
         // 创建Page返回对象用于分页
         Page<Linkman> result = new Page<>();
         result.setPage(page);
-        result.setRows(linkmens);/*存入查询结果*/
+        result.setRows(linkmanList);/*存入查询结果*/
         result.setSize(rows);
         result.setTotal(count);
         return result;

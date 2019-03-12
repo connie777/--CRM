@@ -6,15 +6,15 @@ import cn.edu.sdju.yyh.dao.UserDao;
 import cn.edu.sdju.yyh.dao.VisitDao;
 import cn.edu.sdju.yyh.po.Customer;
 import cn.edu.sdju.yyh.po.Linkman;
+import cn.edu.sdju.yyh.po.User;
 import cn.edu.sdju.yyh.po.Visit;
-import cn.edu.sdju.yyh.service.LinkmanService;
 import cn.edu.sdju.yyh.service.VisitService;
 import cn.edu.sdju.yyh.utils.Page;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -42,7 +42,8 @@ public class VisitServiceImpl implements VisitService {
      * @return
      */
     @Override
-    public Page<Visit> findVisitList(Integer page, Integer rows, Integer visit_cust_id, Date start_date, Date end_date) {
+    public Page<Visit> findVisitList(Integer page, Integer rows, Integer visit_cust_id, Date start_date, Date end_date,
+                                     List<Customer> list) {
         // 创建拜访信息对象
         Visit visit=new Visit();
         // 判断客户名称不为空
@@ -57,6 +58,13 @@ public class VisitServiceImpl implements VisitService {
         if(end_date!=null){
             visit.setEnd_date(end_date);
         }
+        if(list!=null){
+            List<Integer> custIds=new ArrayList<Integer>();
+            for (int i = 0; i < list.size(); i++) {
+               custIds.add(list.get(i).getCust_id());
+            }
+            visit.setCustIds(custIds);
+        }
         // 从哪条数据开始查
         visit.setStart_index((page-1) * rows); ;
         // 每页数
@@ -64,12 +72,6 @@ public class VisitServiceImpl implements VisitService {
         // 查询拜访信息列表
         List<Visit> visits =
                 visitDao.selectVisitList(visit);
-        //用于拜访信息列表中客户名称、联系人名称、业务员名称的显示(数据表存的字段是id，但页面需要显示名字)
-        for (int i = 0; i <visits.size() ; i++) {
-            visits.get(i).setCustomer(this.customerDao.getCustomerById(visits.get(i).getVisit_cust_id()));
-            visits.get(i).setUser(this.userDao.selectUserById(visits.get(i).getVisit_user_id()));
-            visits.get(i).setLinkman(this.linkmanDao.getLinkmanById(visits.get(i).getVisit_lkm_id()));
-        }
         // 查询拜访信息列表总记录数
         Integer count = visitDao.selectVisitListCount(visit);
         // 创建Page返回对象用于分页
@@ -98,7 +100,21 @@ public class VisitServiceImpl implements VisitService {
      */
     @Override
     public Visit getVisitById(Integer id) {
-        return this.visitDao.getVisitById(id);
+        Visit visit=this.visitDao.getVisitById(id);
+        Integer user_id=visit.getVisit_user_id();
+        if(user_id!=null){
+            User user=this.userDao.selectUserById(user_id);
+            visit.setUser(user);
+        }
+        Integer visit_lkm_id=visit.getVisit_lkm_id();
+        /*Date date=visit.getVisit_time();
+        String simpleDate=new SimpleDateFormat("yyyy-MM-dd").format(date);
+        System.out.println(date);
+        System.out.println(simpleDate);*/
+        Linkman linkman=this.linkmanDao.getLinkmanById(visit_lkm_id);
+        visit.setVisit_lkm_name(linkman.getLkm_name());
+        return visit;
+
     }
 
     /**

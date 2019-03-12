@@ -1,14 +1,15 @@
 package cn.edu.sdju.yyh.service.impl;
-import java.util.List;
-
 import cn.edu.sdju.yyh.dao.CustomerDao;
 import cn.edu.sdju.yyh.po.Customer;
+import cn.edu.sdju.yyh.po.User;
 import cn.edu.sdju.yyh.service.CustomerService;
 import cn.edu.sdju.yyh.utils.Page;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 客户管理
@@ -22,7 +23,7 @@ public class CustomerServiceImpl implements CustomerService {
 	// 客户列表
 	public Page<Customer> findCustomerList(Integer page, Integer rows,
                                            String custName, String custSource, String custIndustry,
-                                           String custLevel) {
+                                           String custLevel, User user) {
 		// 创建客户对象
          Customer customer = new Customer();
 		// 判断客户名称
@@ -41,20 +42,36 @@ public class CustomerServiceImpl implements CustomerService {
 		if(StringUtils.isNotBlank(custLevel)){
 			customer.setCust_level(custLevel);
 		}
-		// 当前页
-		customer.setStart((page-1) * rows) ;
-		// 每页数
-		customer.setRows(rows);
+
+		//如果登陆的是销售
+		if(user.getUser_level()==3&&user.getUser_id()!=null){
+		    //设置查询条件：客户负责人为登陆的用户
+            customer.setCust_user_id(user.getUser_id());
+        }
+		// 开始行
+        if(page!=null&&rows!=null){
+            customer.setStart((page-1) * rows) ;
+        }
+        if(rows!=null){
+            // 每页数
+            customer.setRows(rows);
+        }
 		// 查询客户列表
-		List<Customer> customers = 
+		List<Customer> customers =
                             customerDao.selectCustomerList(customer);
 		// 查询客户列表总记录数
 		Integer count = customerDao.selectCustomerListCount(customer);
 		// 创建Page返回对象
 		Page<Customer> result = new Page<>();
-		result.setPage(page);
+		if(page!=null){
+            result.setPage(page);
+        }
+
 		result.setRows(customers);
-		result.setSize(rows);
+		if(rows!=null){
+            result.setSize(rows);
+        }
+
 		result.setTotal(count);
 		return result;
 	}
