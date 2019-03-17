@@ -25,6 +25,7 @@ public class Linkman implements Serializable{
     private String lkm_cust_name; /*所属客户姓名*/
     private Customer customer; /*一个联系人对应一个客户*/
     private List<Integer> cust_ids;
+    private Boolean isSeller;
 
     public List<Integer> getCust_ids() {
         return cust_ids;
@@ -146,5 +147,13 @@ public class Linkman implements Serializable{
 
     public void setLkm_cust_name(String lkm_cust_name) {
         this.lkm_cust_name = lkm_cust_name;
+    }
+
+    public Boolean getSeller() {
+        return isSeller;
+    }
+
+    public void setSeller(Boolean seller) {
+        isSeller = seller;
     }
 }

@@ -35,6 +35,7 @@ public class Visit {
     private Customer customer;
     private Linkman linkman;
     private List<Integer> custIds;
+    private boolean isSeller;
 
     /*分页属性*/
     private Integer start_index;            // 起始行
@@ -193,5 +194,13 @@ public class Visit {
 
     public void setVisit_user_name(String visit_user_name) {
         this.visit_user_name = visit_user_name;
+    }
+
+    public boolean isSeller() {
+        return isSeller;
+    }
+
+    public void setSeller(boolean seller) {
+        isSeller = seller;
     }
 }
