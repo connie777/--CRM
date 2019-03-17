@@ -8,8 +8,8 @@ import java.util.List;
 public interface CustomerService {
 	// 查询客户列表
 	public Page<Customer> findCustomerList(Integer page, Integer rows,
-                                           String custName, String custSource,
-                                           String custIndustry, String custLevel, User user);
+                                           String custName, String custSource, String custIndustry,
+                                           String custLevel, User user,Integer cust_user_id);
 
 
 	public List<Customer> showCustomer(Customer customer);

@@ -1,7 +1,6 @@
 package cn.edu.sdju.yyh.service;
 
 import cn.edu.sdju.yyh.po.MarketPerform;
-import cn.edu.sdju.yyh.po.MarketPlan;
 import cn.edu.sdju.yyh.po.PerformResult;
 import cn.edu.sdju.yyh.utils.Page;
 
@@ -19,7 +18,7 @@ public interface MarketPerformService {
     int createMarketPerform(MarketPerform marketPerform);
 
     // 通过id查询营销业绩
-    MarketPlan getMarketPerformById(Integer id);
+    MarketPerform getMarketPerformById(Integer id);
 
     // 更新营销业绩
     int updateMarketPerform(MarketPerform marketPerform);
@@ -28,7 +27,7 @@ public interface MarketPerformService {
     int deleteMarketPerform(Integer id);
 
     //按月份统计业绩
-    List<PerformResult> countByMonth(Date start_month,Date end_month);
+    List<PerformResult> countByMonth(Date start_month,Date end_month,Integer user_id);
 
     //统计总销售额
     PerformResult getTotalSellAmount();
