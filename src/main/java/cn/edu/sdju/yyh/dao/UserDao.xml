@@ -30,15 +30,40 @@
     
     <insert id="insertUser" parameterType="user">
         insert into sys_user(
-        user_code, user_name, user_password, user_state,user_phone
+        user_code, user_name, user_password, user_state,user_phone,
+        user_level,user_position,user_department,user_avatar,user_email
         ) values (
-        #{user_code},#{user_name},#{user_password},1,#{user_phone}
+        #{user_code},#{user_name},#{user_password},#{user_state},#{user_phone},
+        #{user_level},#{user_position},#{user_department},#{user_avatar},#{user_email}
         )
     </insert>
     
     <update id="updateUser" parameterType="user">
         update sys_user
-        set user_password = #{user_password}
+        <set>
+            <if test="user_name!=null">
+                user_name=#{user_name},
+            </if>
+            <if test="user_password!=null">
+                user_password=#{user_password},
+            </if>
+            <if test="user_phone!=null">
+                user_phone=#{user_phone},
+            </if>
+            <if test="user_email!=null">
+                user_email=#{user_email},
+            </if>
+            <if test="user_position!=null">
+                user_position=#{user_position},
+            </if>
+            <if test="user_department!=null">
+                user_department=#{user_department},
+            </if>
+            <if test="user_avatar!=null">
+                user_avatar=#{user_avatar},
+            </if>
+
+        </set>
         where user_code = #{user_code}
     </update>
     

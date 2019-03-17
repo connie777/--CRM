@@ -1,7 +1,6 @@
 package cn.edu.sdju.yyh.dao;
 
 import cn.edu.sdju.yyh.po.MarketPerform;
-import cn.edu.sdju.yyh.po.MarketPlan;
 import cn.edu.sdju.yyh.po.PerformResult;
 import org.apache.ibatis.annotations.Param;
 
@@ -19,7 +18,7 @@ public interface MarketPerformDao {
     int createMarketPerform(MarketPerform marketPerform);
 
     // 通过id查询营销业绩
-    MarketPlan getMarketPerformById(Integer id);
+    MarketPerform getMarketPerformById(Integer id);
 
     // 更新营销业绩
     int updateMarketPerform(MarketPerform marketPerform);
@@ -29,7 +28,8 @@ public interface MarketPerformDao {
 
     //按月份统计业绩
     List<PerformResult> countByMonth(@Param("start_month") Date start_month,
-                                     @Param("end_month")Date end_month);
+                                     @Param("end_month")Date end_month,
+                                     @Param("user_id")Integer user_id);
     //统计销售总额
     PerformResult getTotalSellAmount();
 

@@ -26,4 +26,7 @@ public interface LinkmanDao {
     //通过客户id查联系人
     List<Linkman> findByCustId(Integer custId);
 
+    //根据客户id删除联系人
+    int deleteByCustId(Integer id);
+
 }

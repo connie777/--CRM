@@ -90,7 +90,6 @@
 	<insert id="createCustomer" parameterType="customer">
 	    insert into customer(
 	                     cust_name,
-	                     cust_user_id,
 	                     cust_create_id,
 	                     cust_source,
 	                     cust_industry,
@@ -103,7 +102,6 @@
 	                     cust_address
 	             )
 	             values(#{cust_name},
-	                    #{cust_user_id},
 	                    #{cust_create_id},
 	                    #{cust_source},
 	                    #{cust_industry},

@@ -5,11 +5,16 @@
     <!--SQL片段  -->
     <sql id="selectLinkmanListWhere">
         <where>
-            <if test="cust_ids != null">
-                <foreach collection="cust_ids" open=" lkm_cust_id in(" separator="," close=")" index="index" item="cust_ids">
-                    #{cust_ids}
-                </foreach>
-            </if>
+            <choose>
+                <when test="cust_ids != null and isSeller == true">
+                    <foreach collection="cust_ids" open=" lkm_cust_id in(" separator="," close=")" index="index" item="cust_ids">
+                        #{cust_ids}
+                    </foreach>
+                </when>
+                <when test="cust_ids == null and isSeller == true">
+                    1!=1
+                </when>
+            </choose>
 	       <if test="lkm_name != null" >
                and lkm_name like "%"#{lkm_name}"%"
 	       </if>
@@ -122,6 +127,9 @@
 	    delete from linkman where lkm_id=#{lkm_id}
 	</delete>
 
+    <delete id="deleteByCustId" parameterType="Integer">
+        delete from linkman where lkm_cust_id=#{id}
+    </delete>
     <!--根据客户id查联系人-->
     <select id="findByCustId" parameterType="Integer" resultType="linkman">
         select *

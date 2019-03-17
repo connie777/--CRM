@@ -12,7 +12,7 @@ public interface ContractDao {
 
     Contract getContractById(String id);
 
-    Integer deleteContract(Integer id);
+    Integer deleteContract(String id);
 
     //创建合同
     int createContract(Contract contract);

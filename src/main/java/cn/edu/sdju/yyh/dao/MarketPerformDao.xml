@@ -74,16 +74,29 @@
 	    where perform_id=#{perform_id}
 	</update>
 	<!-- 删除营销业绩 -->
-	<delete id="deleteMarketPlan" parameterType="Integer">
+	<delete id="deleteMarketPerform" parameterType="Integer">
 	    delete from market_perform where perform_id=#{perform_id}
 	</delete>
 
+
+    <sql id="countByMonthWhere">
+        <where>
+            <if test="start_month != null" >
+                perform_date >= #{start_month}
+            </if>
+            <if test="end_month != null" >
+                AND perform_date &lt;= #{end_month}
+            </if>
+            <if test="user_id != null" >
+                AND perform_user_id = #{user_id}
+            </if>
+        </where>
+    </sql>
     <!--按月份统计业绩-->
     <select id="countByMonth" resultType="performResult">
         select perform_date as month,sum(perform_total_amount) as totalAmount
         from market_perform
-        where perform_date >= #{start_month}
-        and perform_date &lt;= #{end_month}
+        <include refid="countByMonthWhere"/>
         group by perform_date
         order by perform_date asc
         limit 10

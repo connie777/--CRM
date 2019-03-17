@@ -23,4 +23,6 @@ public interface VisitDao {
     // 删除拜访信息
     int deleteVisit(Integer id);
 
+    //根据客户id拜访记录
+    int deleteByCustId(Integer id);
 }
