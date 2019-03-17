@@ -3,7 +3,6 @@ package cn.edu.sdju.yyh.service.impl;
 import cn.edu.sdju.yyh.dao.MarketPerformDao;
 import cn.edu.sdju.yyh.dao.UserDao;
 import cn.edu.sdju.yyh.po.MarketPerform;
-import cn.edu.sdju.yyh.po.MarketPlan;
 import cn.edu.sdju.yyh.po.PerformResult;
 import cn.edu.sdju.yyh.po.User;
 import cn.edu.sdju.yyh.service.MarketPerformService;
@@ -63,7 +62,7 @@ public class MarketPerformServiceImpl implements MarketPerformService {
     }
 
     @Override
-    public MarketPlan getMarketPerformById(Integer id) {
+    public MarketPerform getMarketPerformById(Integer id) {
         return this.marketPerformDao.getMarketPerformById(id);
     }
 
@@ -79,8 +78,8 @@ public class MarketPerformServiceImpl implements MarketPerformService {
 
     //根据月份统计业绩
     @Override
-    public List<PerformResult> countByMonth(Date start_month,Date end_month) {
-        return this.marketPerformDao.countByMonth(start_month,end_month);
+    public List<PerformResult> countByMonth(Date start_month,Date end_month,Integer user_id) {
+        return this.marketPerformDao.countByMonth(start_month,end_month,user_id);
     }
 
     //统计总销售额

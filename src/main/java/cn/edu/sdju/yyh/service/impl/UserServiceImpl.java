@@ -41,6 +41,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int insertUser(User user) {
+	    //此处给新注册的用户一个默认头像
+        user.setUser_avatar("avatar/default_avatar_male.jpg");
+        user.setUser_state(1);
+        user.setUser_level(3);
+        user.setUser_position("销售");
+        user.setUser_department("销售部");
         return this.userDao.insertUser(user);
     }
 

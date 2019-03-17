@@ -56,4 +56,9 @@ public class ContractServiceImpl implements ContractService {
     public Contract getContractById(String id) {
         return this.contractDao.getContractById(id);
     }
+
+    @Override
+    public int deleteContract(String id) {
+        return this.contractDao.deleteContract(id);
+    }
 }

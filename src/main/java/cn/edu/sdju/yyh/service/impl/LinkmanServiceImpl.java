@@ -4,6 +4,7 @@ import cn.edu.sdju.yyh.dao.CustomerDao;
 import cn.edu.sdju.yyh.dao.LinkmanDao;
 import cn.edu.sdju.yyh.po.Customer;
 import cn.edu.sdju.yyh.po.Linkman;
+import cn.edu.sdju.yyh.po.User;
 import cn.edu.sdju.yyh.service.LinkmanService;
 import cn.edu.sdju.yyh.utils.Page;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,8 @@ public class LinkmanServiceImpl implements LinkmanService {
     private LinkmanDao linkmanDao;
     @Autowired
     private CustomerDao customerDao;
+    @Autowired
+    private HttpSession session;
 
     /**
      * 联系人列表
@@ -58,12 +62,19 @@ public class LinkmanServiceImpl implements LinkmanService {
             linkman.setLkm_cust_id(lkm_cust_id);
         }
         List<Integer> cust_ids=new ArrayList<Integer>();
-        if(list!=null&&list.size()>0){
-            for(int i=0;i<list.size();i++){
-                cust_ids.add(list.get(i).getCust_id());
+        User user=(User)session.getAttribute("USER_SESSION");
+        if(user!=null&&user.getUser_level()==3){
+            linkman.setSeller(true);
+            if(list!=null&&list.size()>0){
+                for(int i=0;i<list.size();i++){
+                    cust_ids.add(list.get(i).getCust_id());
+                }
+                linkman.setCust_ids(cust_ids);
+            }else {
+                linkman.setCust_ids(null);
             }
-            linkman.setCust_ids(cust_ids);
         }
+
         // 从哪条数据开始查
         linkman.setStart_index((page-1) * rows);
         // 每页数

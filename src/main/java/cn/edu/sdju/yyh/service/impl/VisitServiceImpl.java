@@ -5,7 +5,6 @@ import cn.edu.sdju.yyh.dao.LinkmanDao;
 import cn.edu.sdju.yyh.dao.UserDao;
 import cn.edu.sdju.yyh.dao.VisitDao;
 import cn.edu.sdju.yyh.po.Customer;
-import cn.edu.sdju.yyh.po.Linkman;
 import cn.edu.sdju.yyh.po.User;
 import cn.edu.sdju.yyh.po.Visit;
 import cn.edu.sdju.yyh.service.VisitService;
@@ -14,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +32,8 @@ public class VisitServiceImpl implements VisitService {
     private VisitDao visitDao;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private HttpSession session;
     /**
      * 获取拜访信息用于分页显示
      * @param page
@@ -58,13 +60,18 @@ public class VisitServiceImpl implements VisitService {
         if(end_date!=null){
             visit.setEnd_date(end_date);
         }
-        if(list!=null){
-            List<Integer> custIds=new ArrayList<Integer>();
-            for (int i = 0; i < list.size(); i++) {
-               custIds.add(list.get(i).getCust_id());
+        User user=(User)session.getAttribute("USER_SESSION");
+        if(user!=null&&user.getUser_level()==3){
+            visit.setSeller(true);
+            if(list!=null&&list.size()>0){
+                List<Integer> custIds=new ArrayList<Integer>();
+                for (int i = 0; i < list.size(); i++) {
+                    custIds.add(list.get(i).getCust_id());
+                }
+                visit.setCustIds(custIds);
             }
-            visit.setCustIds(custIds);
         }
+
         // 从哪条数据开始查
         visit.setStart_index((page-1) * rows); ;
         // 每页数
@@ -101,18 +108,6 @@ public class VisitServiceImpl implements VisitService {
     @Override
     public Visit getVisitById(Integer id) {
         Visit visit=this.visitDao.getVisitById(id);
-        Integer user_id=visit.getVisit_user_id();
-        if(user_id!=null){
-            User user=this.userDao.selectUserById(user_id);
-            visit.setUser(user);
-        }
-        Integer visit_lkm_id=visit.getVisit_lkm_id();
-        /*Date date=visit.getVisit_time();
-        String simpleDate=new SimpleDateFormat("yyyy-MM-dd").format(date);
-        System.out.println(date);
-        System.out.println(simpleDate);*/
-        Linkman linkman=this.linkmanDao.getLinkmanById(visit_lkm_id);
-        visit.setVisit_lkm_name(linkman.getLkm_name());
         return visit;
 
     }

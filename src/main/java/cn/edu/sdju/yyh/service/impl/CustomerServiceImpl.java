@@ -23,9 +23,12 @@ public class CustomerServiceImpl implements CustomerService {
 	// 客户列表
 	public Page<Customer> findCustomerList(Integer page, Integer rows,
                                            String custName, String custSource, String custIndustry,
-                                           String custLevel, User user) {
+                                           String custLevel, User user,Integer cust_user_id) {
 		// 创建客户对象
          Customer customer = new Customer();
+         if(cust_user_id!=null){
+             customer.setCust_user_id(cust_user_id);
+         }
 		// 判断客户名称
 		if(StringUtils.isNotBlank(custName)){
 			customer.setCust_name(custName);
