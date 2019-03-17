@@ -5,6 +5,7 @@ import cn.edu.sdju.yyh.dao.CustomerDao;
 import cn.edu.sdju.yyh.dao.VisitDao;
 import cn.edu.sdju.yyh.po.*;
 import cn.edu.sdju.yyh.service.MarketPerformService;
+import cn.edu.sdju.yyh.service.VisitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -35,6 +36,8 @@ public class DashboardController {
     ContractDao contractDao;
     @Autowired
     VisitDao visitDao;
+    @Autowired
+    VisitService visitService;
 
     //跳转到dashboard页面
     @RequestMapping(value ="/show.action",method = RequestMethod.GET)
@@ -57,18 +60,29 @@ public class DashboardController {
                                  @RequestParam(defaultValue="2018-06")
                                  @DateTimeFormat(pattern = "yyyy-MM")Date start_month,
                                  @RequestParam(defaultValue="2019-03")
-                                 @DateTimeFormat(pattern = "yyyy-MM")Date end_month){
+                                 @DateTimeFormat(pattern = "yyyy-MM")Date end_month,
+                                HttpSession session){
         //按月统计业绩
         List<PerformResult> list;
-        list=this.marketPerformService.countByMonth(start_month,end_month);
+        User user= (User) session.getAttribute("USER_SESSION");
+        if (user!=null&&user.getUser_level()==3){
+            list=this.marketPerformService.countByMonth(start_month,end_month,user.getUser_id());
+        }else {
+            list=this.marketPerformService.countByMonth(start_month,end_month,null);
+        }
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM");
         if (list!=null&&list.size()>0) {
             performResult.setStatus(true);
             List<Map<String ,Object>> list1=new ArrayList<>();
             for (int i=0;i<list.size();i++){
                 Map<String,Object> map=new HashMap<>();
-                map.put("month",sdf.format(list.get(i).getMonth()));
-                map.put("total_amount",list.get(i).getTotalAmount());
+                Date month=list.get(i).getMonth();
+                Double total_amount=list.get(i).getTotalAmount();
+                if (month!=null&&total_amount!=null){
+                    String smonth=sdf.format(month);
+                    map.put("month",sdf.format(list.get(i).getMonth()));
+                    map.put("total_amount",list.get(i).getTotalAmount());
+                }
                 list1.add(map);
             }
             performResult.setResultList(list1);
@@ -92,10 +106,30 @@ public class DashboardController {
             Customer customer=new Customer();
             customer.setCust_user_id(user.getUser_id());
             total_cust=this.customerDao.selectCustomerListCount(customer);
+            List<Customer> customerList=this.customerDao.selectCustomerList(customer);
+            List<Integer> custIds=new ArrayList<Integer>();
             Visit visit=new Visit();
-            visit.setVisit_user_id(user.getUser_id());
-            total_visit_record=this.visitDao.selectVisitListCount(visit);
-            total_sell_amount=this.marketPerformService.getSellAmountByUserId(user.getUser_id()).getTotal_sell_amount();
+            visit.setSeller(true);
+            if(customerList!=null&&customerList.size()>0){
+                for (int i = 0; i < customerList.size(); i++) {
+                    custIds.add(customerList.get(i).getCust_id());
+                }
+                visit.setCustIds(custIds);
+            }else {
+                visit.setCustIds(null);
+            }
+
+            if(customerList==null&&customerList.size()==0){
+                total_visit_record=0;
+            }else {
+                total_visit_record=this.visitDao.selectVisitListCount(visit);
+            }
+            PerformResult performResult1=this.marketPerformService.getSellAmountByUserId(user.getUser_id());
+            if(performResult1!=null){
+                total_sell_amount=performResult1.getTotal_sell_amount();
+            }else{
+                total_sell_amount=0.00;
+            }
         }else {
             total_cust= this.customerDao.selectCustomerListCount(new Customer());
             total_visit_record=this.visitDao.selectVisitListCount(new Visit());

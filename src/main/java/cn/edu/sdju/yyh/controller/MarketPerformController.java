@@ -71,5 +71,38 @@ public class MarketPerformController {
         }
     }
 
+    /**
+     * 业绩删除
+     */
+    @RequestMapping(value = "/deletePerform.action",method = RequestMethod.POST)
+    @ResponseBody
+    public String delete(Integer id){
+        if (this.marketPerformService.deleteMarketPerform(id)>0){
+            return "SUCCESS";
+        }else {
+            return "FAILURE";
+        }
+    }
 
+    /**
+     * 根据id获取业绩
+     */
+    @RequestMapping(value = "/getPerformById.action",method = RequestMethod.GET)
+    @ResponseBody
+    public MarketPerform getPerformById(Integer id){
+        return this.marketPerformService.getMarketPerformById(id);
+    }
+
+    /**
+     * 更新业绩
+     */
+    @RequestMapping(value = "/updatePerform.action",method = RequestMethod.GET)
+    @ResponseBody
+    public String updatePerform(MarketPerform marketPerform){
+        if(this.marketPerformService.updateMarketPerform(marketPerform)>0){
+            return "SUCCESS";
+        }else {
+            return "FAILURE";
+        }
+    }
 }

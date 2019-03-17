@@ -1,12 +1,17 @@
 package cn.edu.sdju.yyh.controller;
+
 import cn.edu.sdju.yyh.po.User;
 import cn.edu.sdju.yyh.service.UserService;
+import cn.edu.sdju.yyh.utils.CodeGenerate;
+import cn.edu.sdju.yyh.utils.Upload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
@@ -101,7 +106,7 @@ public class UserController {
      * 检查用户的手机号
      */
     @ResponseBody
-    @RequestMapping(value = "/phoneCheck",method = RequestMethod.POST)
+    @RequestMapping(value = "/phoneCheck.action",method = RequestMethod.POST)
     public Map phoneCheck(User user){
         Map map=new HashMap();
         String usercode=user.getUser_code();
@@ -121,7 +126,7 @@ public class UserController {
      * 密码重置
      */
     @ResponseBody
-    @RequestMapping(value = "/pwdReset",method = RequestMethod.POST)
+    @RequestMapping(value = "/pwdReset.action",method = RequestMethod.POST)
     public Map pwdReset(User user){
         Map map=new HashMap();
         String usercode=user.getUser_code();
@@ -134,4 +139,52 @@ public class UserController {
             return map;
         }
     }
+
+    /**
+     * 根据user_id获取用户信息
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/getUserByUserId.action",method = RequestMethod.POST)
+    @ResponseBody
+    public User getUserByUserId(Integer id){
+        return this.userService.selectUserById(id);
+    }
+
+    /**
+     * 更新用户信息
+     * @param user
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/updateUserInfo.action",method = RequestMethod.POST)
+    @ResponseBody
+    public String updateUserInfo(User user,HttpServletRequest request,HttpSession session){
+        //设置图片上传路径
+        String url = request.getSession().getServletContext().getRealPath("/avatar");
+        System.out.println(request.getSession().getServletContext().getRealPath(""));
+        MultipartFile multipartFile=user.getAvatar_file();
+        if(multipartFile!=null){
+            String dbPath="avatar/"+Upload.upload(multipartFile,url);
+            user.setUser_avatar(dbPath);
+        }
+        int result=this.userService.updateUser(user);
+        if(result>0){
+            //更新session中的用户信息
+            User user1=this.userService.findUserByUsercode(user.getUser_code());
+            session.setAttribute("USER_SESSION",user1);
+            return "SUCCESS";
+        }else {
+            return "FAILURE";
+        }
+    }
+
+    @RequestMapping(value = "/returnValidateCode",method = RequestMethod.GET)
+    @ResponseBody
+    public String returnValidateCode(){
+        String code= CodeGenerate.codeGenerate();
+        String content="您的验证码是"+code+"。请不要把验证码泄露给其他人。";
+        return content;
+    }
+
 }

@@ -60,7 +60,7 @@ public class ContractController {
         String url = request.getSession().getServletContext().getRealPath("/upload");
         System.out.println(request.getSession().getServletContext().getRealPath(""));
         MultipartFile multipartFile=contract.getContract_annex();
-        String dbPath=Upload.upload(multipartFile,url);
+        String dbPath="upload/"+Upload.upload(multipartFile,url);
         contract.setContract_img(dbPath);
         int result=this.contractService.createContract(contract);
         if(result>0){
@@ -78,5 +78,16 @@ public class ContractController {
         * String absoUrl=localUrl+"/"+contract.getContract_img();*/
         Contract contract=this.contractService.getContractById(id);
         return contract.getContract_img();
+    }
+
+    //根据id删除合同
+    @RequestMapping(value = "/deleteContract.action",method = RequestMethod.POST)
+    @ResponseBody
+    public String deleteContract(String id){
+        if(this.contractService.deleteContract(id)>0){
+            return "SUCCESS";
+        }else {
+            return "FAILURE";
+        }
     }
 }

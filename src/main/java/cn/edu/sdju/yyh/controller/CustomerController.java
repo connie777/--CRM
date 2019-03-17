@@ -1,4 +1,6 @@
 package cn.edu.sdju.yyh.controller;
+import cn.edu.sdju.yyh.dao.LinkmanDao;
+import cn.edu.sdju.yyh.dao.VisitDao;
 import cn.edu.sdju.yyh.po.BaseDict;
 import cn.edu.sdju.yyh.po.Customer;
 import cn.edu.sdju.yyh.po.User;
@@ -27,6 +29,10 @@ public class CustomerController {
 	@Autowired
 	private CustomerService customerService;
 	@Autowired
+    private LinkmanDao linkmanDao;
+	@Autowired
+    private VisitDao visitDao;
+	@Autowired
 	private BaseDictService baseDictService;
 	@Autowired
     private UserService userService;
@@ -44,7 +50,7 @@ public class CustomerController {
 	 */
 	@RequestMapping(value = "/customer/list.action")
 	public String list(@RequestParam(defaultValue="1")Integer page,
-			@RequestParam(defaultValue="10")Integer rows, 
+			@RequestParam(defaultValue="10")Integer rows, Integer cust_user_id,
 			String custName, String custSource, String custIndustry,
 			String custLevel, Model model,HttpSession session) {
 	    //获取登陆的用户信息
@@ -52,7 +58,7 @@ public class CustomerController {
 		// 条件查询所有客户（user为登陆的用户信息）
 		Page<Customer> customers = customerService
 				.findCustomerList(page, rows, custName, 
-                                        custSource, custIndustry,custLevel,user);
+                                        custSource, custIndustry,custLevel,user,cust_user_id);
 		model.addAttribute("page", customers);
 		//查询所有销售
         List<User> userList=this.userService.selectAllSeller();
@@ -74,6 +80,7 @@ public class CustomerController {
 		model.addAttribute("custSource", custSource);
 		model.addAttribute("custIndustry", custIndustry);
 		model.addAttribute("custLevel", custLevel);
+		model.addAttribute("cust_user_id",cust_user_id);
 		return "customer";
 	}
 	
@@ -120,15 +127,23 @@ public class CustomerController {
 
 	/**
 	 * 删除客户
+     * 这个操作很危险，级联删除对应的联系人、拜访记录
 	 */
 	@RequestMapping("/customer/delete.action")
 	@ResponseBody
 	public String customerDelete(Integer id) {
-	    int rows = customerService.deleteCustomer(id);
-	    if(rows > 0){			
-	        return "OK";
-	    }else{
-	        return "FAIL";			
+	    try {
+            //先删除客户
+            customerService.deleteCustomer(id);
+            System.out.println("=====客户删除成功=====");
+            linkmanDao.deleteByCustId(id);
+            System.out.println("=====联系人删除成功=====");
+            visitDao.deleteByCustId(id);
+            System.out.println("=====拜访记录删除成功=====");
+            return "OK";
+        }catch (Exception e){
+	        e.printStackTrace();
+            return "FAIL";
 	    }
 	}
 
