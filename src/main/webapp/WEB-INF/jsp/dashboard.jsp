@@ -48,7 +48,7 @@
 <div id="wrapper">
     <%--引入头部和左侧导航栏--%>
     <%@include file="head.jsp" %>
-    <div id="page-wrapper" style="background-color: #efefef;padding: 0px">
+    <div id="page-wrapper" style="background-color: floralwhite;padding: 0px">
         <div class="row" style="padding-left: 14px;">
             <%--4个数据展示框--%>
             <div style="width: 100%;height: 168px">
@@ -129,7 +129,9 @@
 <script src="../../js/dataTables.bootstrap.min.js"></script>
 <script src="../../js/sb-admin-2.js"></script>
 <script src="../../js/echarts.js"></script>
-
+<script src="../../js/fileinput.js"></script>
+<script src="../../js/zh.js"></script>
+<script src="../../js/spop.min.js"></script>
 <script type="text/javascript">
     //是否是第一次进入该页面
     $(function () {
@@ -252,21 +254,26 @@
             dataType : "json", //返回数据形式为json
             success:function (data) {
                 console.log(data);
-                for(var i=0;i<data.resultList.length;i++){
-                    months.push(data.resultList[i].month);
-                    amounts.push(data.resultList[i].total_amount);
+                if(data.resultList!=null){
+                    for(var i=0;i<data.resultList.length;i++){
+                        months.push(data.resultList[i].month);
+                        amounts.push(data.resultList[i].total_amount);
+                    }
+                    myChart.hideLoading();//隐藏加载动画
+                    myChart.setOption({
+                        xAxis: {
+                            data: months
+                        },
+                        series: [{
+                            // 根据名字对应到相应的系列
+                            name: '销售额',
+                            data: amounts
+                        }]
+                    })
+                }else{
+                    myChart.hideLoading();//隐藏加载动画
                 }
-                myChart.hideLoading();//隐藏加载动画
-                myChart.setOption({
-                    xAxis: {
-                        data: months
-                    },
-                    series: [{
-                        // 根据名字对应到相应的系列
-                        name: '销售额',
-                        data: amounts
-                    }]
-                })
+
             }
         })
         //查询其他四个数据

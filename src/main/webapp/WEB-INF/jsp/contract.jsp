@@ -19,8 +19,8 @@
     <link href="https://cdn.bootcss.com/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" rel="stylesheet">
     <style type="text/css">
         #element_to_pop_up{
-            width: 1000px;
-            height: 700px;
+            /*width: 1000px;
+            height: 700px;*/
             display: none;
             border: #00BDDC 2px;
         }
@@ -31,15 +31,15 @@
     <%--引入头部和左侧导航栏--%>
 	<%@include file="head.jsp" %>
     <!-- 合同列表   查询部分  start-->
-	<div id="page-wrapper">
+	<div id="page-wrapper" style="background-color: beige;">
 		<div class="row">
 			<div class="col-lg-12">
-				<h1 class="page-header">合同管理</h1>
+				<h1 class="page-header" style="margin-top: 15px;">合同管理</h1>
 			</div>
 			<!-- /.col-lg-12 -->
 		</div>
 		<!-- 多条件查询 -->
-		<div class="panel panel-default">
+		<div class="panel panel-default" style="margin-bottom: 15px;">
 			<div class="panel-body">
 				<form class="form-inline" method="get" 
 				      action="${pageContext.request.contextPath }/contract/list.action">
@@ -68,12 +68,13 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">合同列表</div>
 					<!-- /.panel-heading -->
-					<table class="table table-bordered table-striped">
+					<table class="table table-bordered table-hover<%--table-striped--%>">
 						<thead>
 							<tr>
 								<th>合同编号</th>
 								<th>客户名称</th>
 								<th>签约日期</th>
+                                <th>操作</th>
 							</tr>
 						</thead>
 						<tbody style="text-align: center">
@@ -85,11 +86,14 @@
                                         <%--利用jstl的转换出正确的日期格式--%>
                                         <fmt:formatDate value='${row.contract_date}' type='time' pattern='yyyy-MM-dd'/>
                                     </td>
+                                    <td>
+                                        <a href="#" class="btn btn-danger btn-xs" onclick="deleteContract('${row.contract_id}')"><i class="fa fa-trash-o fa-lg"></i>删除</a>
+                                    </td>
 								</tr>
 							</c:forEach>
 						</tbody>
 					</table>
-					<div class="col-md-12 text-right">
+					<div class="col-md-12 text-right" style="padding-right: 0px;">
 						<yh:page url="${pageContext.request.contextPath }/contract/list.action" />
 					</div>
 					<!-- /.panel-body -->
@@ -180,8 +184,10 @@
 <script src="../../js/zh.js"></script>
 <%--提示框--%>
 <script src="../../js/spop.min.js"></script>
-<%--bpopup--%>
+<%--bpopup http://dinbror.dk/bpopup/  用于模态框显示--%>
 <script src="../../js/bpopup.min.js"></script>
+<%--美化confirm--%>
+<script src="../../js/flavr.min.js"></script>
 <!-- 编写js代码 -->
 <script type="text/javascript">
     //初始化日期插件、文件上传插件
@@ -275,8 +281,47 @@
             }
         });
     }
+    //删除合同
+    function deleteContract(id) {
+        new $.flavr({
+            modal       : false, //关闭模态
+            content     : '确定删除该条记录吗 ？',
+            dialog      : 'confirm',
+            onConfirm   : function( $container ){
+                $.ajax({
+                    url:'${pageContext.request.contextPath}/contract/deleteContract.action',
+                    data:{"id":id},
+                    type:'post',
+                    success:function (data) {
+                        if(data=="SUCCESS"){
+                            spop({
+                                template: '<h4 class="spop-title">删除成功！</h4>',
+                                position: 'top-center',
+                                style: 'success',
+                                autoclose: 1000,
+                                onClose : function(){
+                                    window.location.reload();
+                                }
+                            });
+                        }else {
+                            spop({
+                                template: '<h4 class="spop-title">删除失败！</h4>',
+                                position: 'top-center',
+                                style: 'error',
+                                autoclose: 1000,
+                                onClose : function(){
+                                    window.location.reload();
+                                }
+                            });
+                        }
+                    }
+                })
+            },
+            onCancel    : function( $container ){
+            }
+        })
 
-
+    }
 
 </script>
 </body>

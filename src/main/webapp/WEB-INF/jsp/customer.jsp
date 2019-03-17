@@ -19,15 +19,15 @@
     <%--引入头部和左侧导航栏--%>
 	<%@include file="head.jsp" %>
     <!-- 客户列表查询部分  start-->
-	<div id="page-wrapper">
+	<div id="page-wrapper" style="background-color: aliceblue;">
 		<div class="row">
 			<div class="col-lg-12">
-				<h1 class="page-header">客户信息管理</h1>
+				<h1 class="page-header" style="margin-top: 15px;">客户信息管理</h1>
 			</div>
 			<!-- /.col-lg-12 -->
 		</div>
 		<!-- /.row -->
-		<div class="panel panel-default">
+		<div class="panel panel-default" style="margin-bottom: 15px;">
 			<div class="panel-body">
 				<form class="form-inline" method="get" 
 				      action="${pageContext.request.contextPath }/customer/list.action">
@@ -72,6 +72,20 @@
 							</c:forEach>
 						</select>
 					</div>
+                    <c:if test="${USER_SESSION.user_level != 3}">
+                    <div class="form-group">
+                        <label for="cust_user_id">负责人</label>
+                        <select	class="form-control" id="cust_user_id"  name="cust_user_id">
+                            <option value="">--请选择--</option>
+                            <c:forEach items="${users}" var="item">
+                                <option value="${item.user_id}"
+                                        <c:if test="${item.user_id == cust_user_id}"> selected</c:if>>
+                                        ${item.user_name }
+                                </option>
+                            </c:forEach>
+                        </select>
+                    </div>
+                    </c:if>
 					<button type="submit" class="btn btn-primary"><i class="fa fa-search fa-lg" style="margin-right: 5px"></i>查询</button>
 				</form>
 			</div>
@@ -91,7 +105,7 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">客户信息列表</div>
 					<!-- /.panel-heading -->
-					<table class="table table-bordered table-striped">
+					<table class="table <%--table-bordered--%> table-hover <%--table-striped--%>">
 						<thead>
 							<tr>
 								<%--<th>编号</th>--%>
@@ -124,7 +138,7 @@
 							</c:forEach>
 						</tbody>
 					</table>
-					<div class="col-md-12 text-right">
+					<div class="col-md-12 text-right" style="padding-right: 0px;">
 						<yh:page url="${pageContext.request.contextPath }/customer/list.action" />
 					</div>
 					<!-- /.panel-body -->
@@ -369,6 +383,9 @@
 <script src="../../js/spop.min.js"></script>
 <%--美化confirm--%>
 <script src="../../js/flavr.min.js"></script>
+<%--文件上传--%>
+<script src="../../js/fileinput.js"></script>
+<script src="../../js/zh.js"></script>
 <!-- 编写js代码 -->
 <script type="text/javascript">
 

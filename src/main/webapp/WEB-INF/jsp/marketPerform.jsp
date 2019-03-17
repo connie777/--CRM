@@ -22,15 +22,15 @@
 <div id="wrapper">
     <%--引入头部和左侧导航栏--%>
 	<%@include file="head.jsp" %>
-    <div id="page-wrapper">
+    <div id="page-wrapper" style="background-color: aliceblue;">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">营销业绩管理</h1>
+                    <h1 class="page-header" style="margin-top: 15px;">营销业绩管理</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
             <!-- 多条件查询 -->
-            <div class="panel panel-default">
+            <div class="panel panel-default" style="margin-bottom: 15px;">
                 <div class="panel-body">
                     <form class="form-inline" method="get"
                           action="${pageContext.request.contextPath }/marketPerform/list.action">
@@ -73,12 +73,15 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">营销业绩统计</div>
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-hover table-bordered <%--table-striped--%>">
                             <thead>
                             <tr>
                                 <th>营销员</th>
                                 <th>月份</th>
                                 <th>销售额</th>
+                                <c:if test="${USER_SESSION.user_level!=3}">
+                                <th>操作</th>
+                                </c:if>
                             </tr>
                             </thead>
                             <tbody style="text-align: center">
@@ -90,12 +93,18 @@
                                         <fmt:formatDate value='${row.perform_date}' type='time' pattern='yyyy-MM'/>
                                     </td>
                                     <td>${row.perform_total_amount}</td>
+                                    <c:if test="${USER_SESSION.user_level!=3}">
+                                    <td>
+                                        <a href="#" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#editPerformDialog" onclick= "editPerform(${row.perform_id})"><i class="fa fa-edit fa-lg"></i>修改</a>
+                                        <a href="#" class="btn btn-danger btn-xs" onclick="deletePerform(${row.perform_id})"><i class="fa fa-trash-o fa-lg"></i>删除</a>
 
+                                    </td>
+                                    </c:if>
                                 </tr>
                             </c:forEach>
                             </tbody>
                         </table>
-                        <div class="col-md-12 text-right">
+                        <div class="col-md-12 text-right" style="padding-right: 0px;">
                             <yh:page url="${pageContext.request.contextPath }/marketPerform/list.action" />
                         </div>
                     </div>
@@ -152,7 +161,56 @@
                 </div>
             </div>
         </div>
+        <%--业绩修改模态框--%>
+        <div class="modal fade" id="editPerformDialog" tabindex="-1" role="dialog"
+             aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myEditModalLabel">业绩录入</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" id="edit_perform_form">
+                            <input type="hidden" id="edit_perform_id" name="perform_id"/>
+                            <div class="form-group">
+                                <label for="edit_perform_user_id" style="float: left;padding: 7px 15px 0 42px;">营销员</label>
+                                <div class="col-sm-10">
+                                    <select	class="form-control" id="edit_perform_user_id"  name="perform_user_id">
+                                        <option value="">--请选择--</option>
+                                        <c:forEach items="${sellers}" var="item">net
+                                            <option value="${item.user_id}">
+                                                    ${item.user_name }
+                                            </option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit_perform_date" class="col-sm-2 control-label">月份</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control date-picker" id="edit_perform_date" placeholder="月份" name="perform_date" readonly/>
+                                </div>
+                            </div>
 
+                            <div class="form-group">
+                                <label for="edit_perform_total_amount" class="col-sm-2 control-label">销售额</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="edit_perform_total_amount" placeholder="销售额" name="perform_total_amount" />
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="updatePerform()">保存修改</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 </div>
 <!-- 引入js文件 -->
 <!-- jQuery -->
@@ -171,6 +229,11 @@
 <script src="https://cdn.bootcss.com/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.zh-CN.min.js"></script>
 <%--提示框--%>
 <script src="../../js/spop.min.js"></script>
+<%--美化confirm--%>
+<script src="../../js/flavr.min.js"></script>
+<%--文件上传--%>
+<script src="../../js/fileinput.js"></script>
+<script src="../../js/zh.js"></script>
 <!-- 编写js代码 -->
 <script type="text/javascript">
     //初始化日期插件
@@ -219,6 +282,97 @@
                 }else{
                     spop({
                         template: '<h4 class="spop-title">业绩录入失败！</h4>',
+                        position: 'top-center',
+                        style: 'error',
+                        autoclose: 2000,
+                        onClose : function(){
+                            window.location.reload();
+                        }
+                    });
+                }
+            }
+        })
+    }
+    // 删除业绩
+    function deletePerform(id) {
+        new $.flavr({
+            modal       : false, //关闭模态
+            content     : '确定删除该条记录吗 ？',
+            dialog      : 'confirm',
+            onConfirm   : function( $container ){
+                $.ajax({
+                    type:"post",
+                    url:"${pageContext.request.contextPath}/marketPerform/deletePerform.action",
+                    data:{"id":id},
+                    success:function (data) {
+                        if(data=="SUCCESS"){
+                            spop({
+                                template: '<h4 class="spop-title">删除成功！</h4>',
+                                position: 'top-center',
+                                style: 'success',
+                                autoclose: 1000,
+                                onClose : function(){
+                                    window.location.reload();
+                                }
+                            });
+                        }else {
+                            spop({
+                                template: '<h4 class="spop-title">删除失败！</h4>',
+                                position: 'top-center',
+                                style: 'error',
+                                autoclose: 1000,
+                                onClose : function(){
+                                    window.location.reload();
+                                }
+                            });
+                        }
+                    }
+                })
+            },
+            onCancel    : function( $container ){
+            }
+        })
+    }
+    //根据id获取业绩
+    function editPerform(id) {
+        $.ajax({
+            type:'get',
+            url:'${pageContext.request.contextPath}/marketPerform/getPerformById.action',
+            data:{'id':id},
+            success:function (data) {
+                $('#edit_perform_id').val(data.perform_id);
+                $('#edit_perform_user_id').val(data.perform_user_id);
+                if(data.perform_date!=null){
+                    var month;
+                    month=dateFormat(data.perform_date);
+                    $('#edit_perform_date').val(month);
+                }else{
+                    $('#edit_perform_date').val("");
+                }
+                $('#edit_perform_total_amount').val(data.perform_total_amount);
+            }
+        })
+    }
+    //更新业绩
+    function updatePerform() {
+        $.ajax({
+            type:'get',
+            url:'${pageContext.request.contextPath}/marketPerform/updatePerform.action',
+            data:$('#edit_perform_form').serialize(),
+            success:function (data) {
+                if(data='SUCCESS'){
+                    spop({
+                        template: '<h4 class="spop-title">业绩更新成功！</h4>',
+                        position: 'top-center',
+                        style: 'success',
+                        autoclose: 500,
+                        onClose : function(){
+                            window.location.reload();
+                        }
+                    });
+                }else {
+                    spop({
+                        template: '<h4 class="spop-title">业绩更新失败！</h4>',
                         position: 'top-center',
                         style: 'error',
                         autoclose: 2000,

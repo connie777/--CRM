@@ -17,7 +17,8 @@
 <script src="../../js/snow.js"></script>
 <script src="../../js/jquery.pure.tooltips.js"></script>
 <script src="../../js/spop.min.js"></script>
-<script>	
+<script>
+    var code;
 	(function() {
 		// trim polyfill : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
 		if (!String.prototype.trim) {
@@ -82,6 +83,7 @@
                 autoclose: 3000
             })
         }
+
 	});
 
 	//根据参数名获取url中的参数值
@@ -217,7 +219,8 @@
 			password = $("#register-password").val(),
 			repassword = $("#register-repassword").val(),
 			phone = $("#register-phone").val(),
-			flag = false;
+			flag = false,
+            input_code=$('#register-validate-code').val();
         //用户名只能是15位以下的字母或数字
         var regExp = new RegExp("^[a-zA-Z0-9_]{1,15}$");
 		//判断用户名密码是否为空
@@ -231,16 +234,17 @@
         		content:"用户名不能为空！"
         	});
 			flag = true;
-		}else if(!regExp.test(usercode)){
-            $.pt({
-                target: $("#register-usercode"),
-                position: 'r',
-                align: 't',
-                width: 'auto',
-                height: 'auto',
-                content:"用户名必须为15位以下的字母或数字！"
-            });
-            flag = true;
+		}
+		else if(!regExp.test(usercode)){
+        $.pt({
+            target: $("#register-usercode"),
+            position: 'r',
+            align: 't',
+            width: 'auto',
+            height: 'auto',
+            content:"用户名必须为15位以下的字母或数字！"
+        });
+        flag = true;
         }
         else if(username == ""){
             $.pt({
@@ -262,17 +266,7 @@
         		content:"密码不能为空！"
         	});
 			flag = true;
-		}else if(password != repassword){
-            $.pt({
-                target: $("#register-repassword"),
-                position: 'r',
-                align: 't',
-                width: 'auto',
-                height: 'auto',
-                content:"两次输入的密码不一致！"
-            });
-            flag = true;
-        }else if(phone == ""){
+		}else if(phone == ""){
             $.pt({
                 target: $("#register-phone"),
                 position: 'r',
@@ -282,7 +276,17 @@
                 content:"手机号不能为空！"
             });
             flag = true;
-        }else {
+        }else if(input_code!=code){
+            $.pt({
+                target: $("#register-validate-code"),
+                position: 'r',
+                align: 't',
+                width: 'auto',
+                height: 'auto',
+                content:"验证码不正确！"
+            });
+            flag = true;
+        }else{
             //调后台代码检查用户名是否已经被注册
             $.ajax({
                 type: "post",
@@ -456,8 +460,66 @@
             }
         })
     }
-	
-	
+
+    function createCode() {
+        var arr=["1","2", "3", "4", "5", "6", "7",
+            "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
+            "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
+            "W", "X", "Y", "Z"];
+        var code="";
+        for(var i=0;i<6;i++){
+            var index=parseInt(Math.random()*arr.length);
+            code += arr[index];
+        }
+        return code;
+    }
+
+    //发送验证码
+	function sendCode() {
+        var timer=null;
+        clearInterval(timer);//这句话至关重要
+        var time=30;
+        timer=setInterval(function(){
+            //console.log(time);
+            if(time<=0){
+                $("#button_id").attr('disabled',false);
+
+            }else {
+                $("#button_id").attr('disabled',true);
+                time--;
+            }
+        },1000);
+
+        var mobile=$('#register-phone').val();
+        code=createCode();
+        var tpl_value='%23code%23%3d'+code;
+        var tpl_id=143712;
+        var key='433123f58c7eea010555e640d191aa49';
+        $.ajax({
+            url:'http://v.juhe.cn/sms/send?mobile='+mobile+'&tpl_id='+tpl_id+'&tpl_value='+tpl_value+'&key='+key,
+            type:'post',
+            success:function (data) {
+                if(data.error_code==0){
+                    console.log(code);
+                    spop({
+                        template: '<h4 class="spop-title">验证码发送成功！</h4>',
+                        position: 'top-center',
+                        style: 'success',
+                        autoclose: 1000,
+
+                    });
+                }else {
+                    spop({
+                        template: '<h4 class="spop-title">验证码发送失败！</h4>',
+                        position: 'top-center',
+                        style: 'error',
+                        autoclose: 1000,
+
+                    });
+                }
+            }
+        })
+    }
 	
 	
 	
@@ -615,22 +677,33 @@ body{
 									<span class="input__label-content input__label-content--hideo"></span>
 								</label>
 							</span>
-							<span class="input input--hideo">
-								<input class="input__field input__field--hideo" type="password" id="register-repassword"
-                                       placeholder="请确认密码" maxlength="15"/>
-								<label class="input__label input__label--hideo" for="register-repassword">
-									<i class="fa fa-fw fa-lock icon icon--hideo"></i>
-									<span class="input__label-content input__label-content--hideo"></span>
-								</label>
-							</span>
-							<span class="input input--hideo">
+                            <span class="input input--hideo">
 								<input class="input__field input__field--hideo" type="text" id="register-phone"
                                        name="phone" autocomplete="off" placeholder="请输入手机号"/>
 								<label class="input__label input__label--hideo" for="register-phone">
 									<i class="fa fa-fw fa-phone icon icon--hideo"></i>
 									<span class="input__label-content input__label-content--hideo"></span>
 								</label>
+                                <input class="btn btn-primary" id="button_id" type="button" value="Send" onclick="sendCode()"
+                                       style="position: absolute;width: 4em;height: 68%;right: 0px;bottom: 2px;">
 							</span>
+                            <span class="input input--hideo">
+								<input class="input__field input__field--hideo" type="text" id="register-validate-code"
+                                       name="validate_code" autocomplete="off" placeholder="请输入验证码" maxlength="15"/>
+								<label class="input__label input__label--hideo" for="register-validate-code">
+									<i class="fa fa-fw fa-lock icon icon--hideo"></i>
+									<span class="input__label-content input__label-content--hideo"></span>
+								</label>
+							</span>
+							<!--<span class="input input&#45;&#45;hideo">
+								<input class="input__field input__field&#45;&#45;hideo" type="password" id="register-repassword"
+                                       placeholder="请确认密码" maxlength="15"/>
+								<label class="input__label input__label&#45;&#45;hideo" for="register-repassword">
+									<i class="fa fa-fw fa-lock icon icon&#45;&#45;hideo"></i>
+									<span class="input__label-content input__label-content&#45;&#45;hideo"></span>
+								</label>
+							</span>-->
+
 						</section>
 					</div>
 					<div class="form-actions">

@@ -28,6 +28,27 @@
     <link rel="stylesheet" href="../../css/flavr.css">
     <%--文件上传--%>
     <link rel="stylesheet" href="../../css/fileinput.css">
+    <%--CSS控制样式--%>
+    <style>
+        .kv-avatar .krajee-default.file-preview-frame,.kv-avatar .krajee-default.file-preview-frame:hover {
+            margin: 0;
+            padding: 0;
+            border: none;
+            box-shadow: none;
+            text-align: center;
+        }
+        .kv-avatar {
+            display: inline-block;
+        }
+        .kv-avatar .file-input {
+            display: table-cell;
+            width: 269px;
+            height: 290px;
+        }
+        .row{
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
 	
@@ -175,18 +196,22 @@
 		</li>
 		<!-- 消息通知 end -->
 		<!-- 用户信息和系统设置 start -->
-		<li class="dropdown">
-			<a class="dropdown-toggle" data-toggle="dropdown" href="#"> 
-				<i class="fa fa-user fa-fw"></i>
-				<i class="fa fa-caret-down"></i>
+		<li class="dropdown" style="top: -2px;">
+			<a class="dropdown-toggle" data-toggle="dropdown" href="#" style="padding: 0px;">
+                <img id="top_user_avatar" style="height: 50px;width: 60px;" src="http://localhost:8080/${USER_SESSION.user_avatar}">
 			</a>
 			<ul class="dropdown-menu dropdown-user">
-				<li><a href="#"><i class="fa fa-user fa-fw"></i>
-				               用户：${USER_SESSION.user_name}
-				    </a>
+				<li style="margin-left: 20px;margin-top: 4px;">
+                    <i class="fa fa-user fa-fw"></i>用户：${USER_SESSION.user_name}
 				</li>
-				<%--<li><a href="#"><i class="fa fa-gear fa-fw"></i> 系统设置</a></li>--%>
-				<li class="divider"></li>
+                <li style="margin-left: 20px;margin-top: 4px;margin-bottom: 1px;">
+                    <i class="fa fa-briefcase fa-fw"></i>职位：${USER_SESSION.user_position}
+                </li>
+				<li>
+                    <a href="#" onclick="getInfo()" data-toggle="modal" data-target="#myInfoModal">
+                    <i class="fa fa-gear fa-fw"></i>设置
+                    </a>
+                </li>
 				<li>
 					<a href="${pageContext.request.contextPath }/logout.action">
 					<i class="fa fa-sign-out fa-fw"></i>退出登录
@@ -231,19 +256,19 @@
                 <%--一级菜单--%>
                 <li>
                         <a href="#" >
-                            <i class="fa fa-suitcase fa-fw" ></i>
+                            <i class="fa fa-database fa-fw" ></i>
                             营销管理
                         </a>
 
                         <ul>
                             <li>
                                 <a href="${pageContext.request.contextPath }/market/planList.action">
-                                    <i class="fa fa-suitcase fa-fw" ></i> 营销计划管理
+                                    <i class="fa fa-calendar-check-o fa-fw" ></i> 营销计划管理
                                 </a>
                             </li>
                             <li>
                                 <a href="${pageContext.request.contextPath }/marketPerform/list.action">
-                                    <i class="fa fa-suitcase fa-fw" ></i> 营销业绩管理
+                                    <i class="fa fa-credit-card fa-fw" ></i> 营销业绩管理
                                 </a>
                             </li>
                         </ul>
@@ -280,5 +305,163 @@
 	</div>
 	<!-- 左侧显示列表部分 end--> 
   </nav>
+
+    <%--模态框--%>
+    <div class="modal fade" id="myInfoModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document" style="width: 900px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">个人信息编辑</h4>
+                </div>
+                <div class="modal-body" style="height: 355px;">
+                    <form class="form form-vertical" action="#">
+                        <div class="row">
+                            <div class="col-sm-4 text-center">
+                                <div class="kv-avatar">
+                                    <div <%--class="file-loading"--%>>
+                                        <input class="file-loading" id="user_avatar" name="avatar_file" type="file">
+                                    </div>
+                                </div>
+                                <div class="kv-avatar-hint"><small>图片大小不得超过1500KB</small></div>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for=>用户账号</label>
+                                            <input type="text" class="form-control" id="user_code" name="user_code" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label >用户姓名</label>
+                                            <input type="text" class="form-control" id="user_name" name="user_name" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label >职位</label>
+                                            <input type="text" class="form-control" id="user_position" name="user_position" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label >部门</label>
+                                            <input type="text" class="form-control" id="user_department" name="user_department" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label >邮箱</label>
+                                            <input type="text" class="form-control" id="user_email" name="user_email">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label >手机号</label>
+                                            <input type="text" class="form-control" id="user_phone" name="user_phone" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="updateInfo()">更新个人信息</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
 </body>
+<script src="../../js/jquery-1.11.3.min.js"></script>
+<%--<script src="../../js/bootstrap.min.js"></script>--%>
+
+<script type="text/javascript">
+    $(function () {
+        /*var btnCust = '<button type="button" class="btn btn-secondary" title="Add picture tags" ' +
+            'onclick="alert(\'Call your custom code here.\')">' +
+            '<i class="glyphicon glyphicon-tag"></i>' +
+            '</button>';*/
+        //初始化上传控件
+        $('#user_avatar').fileinput({
+            language:"zh",
+            overwriteInitial: true,
+            maxFileSize: 1500,
+            showClose: false,
+            showCaption: false,
+            showBrowse: false,
+            browseOnZoneClick: true,
+            removeLabel: '',
+            removeIcon: '<i class="glyphicon glyphicon-remove"></i>',
+            removeTitle: 'Cancel or reset changes',
+            /*elErrorContainer: '#kv-avatar-errors-2',
+            msgErrorClass: 'alert alert-block alert-danger',*/
+            defaultPreviewContent: '<img style="width:160px;height:160px" src="http://localhost:8080/${USER_SESSION.user_avatar}" alt="Your Avatar"><h6 class="text-muted">点击更换头像</h6>',
+            layoutTemplates: {main2: '{preview} ' /*+  btnCust */+ ' {remove} {browse}'},
+            allowedFileExtensions: ["jpg", "png", "gif","jpeg"]
+        });
+    })
+    //给模态框赋值
+    function getInfo() {
+        $('#user_code').val('${USER_SESSION.user_code}');
+        $('#user_name').val('${USER_SESSION.user_name}');
+        $('#user_position').val('${USER_SESSION.user_position}');
+        $('#user_department').val('${USER_SESSION.user_department}');
+        $('#user_email').val('${USER_SESSION.user_email}');
+        $('#user_phone').val('${USER_SESSION.user_phone}');
+    }
+    // 更新用户信息
+    function updateInfo() {
+        var file_obj=document.getElementById('user_avatar').files[0];
+        var fd = new FormData();
+        fd.append('user_code', $('#user_code').val());
+        /*fd.append('user_name',$('#user_name').val());*/
+        /*fd.append('user_position',$('#user_position').val());*/
+        /*fd.append('user_department',$('#user_department').val());*/
+        fd.append('user_email',$('#user_email').val());
+        fd.append('user_phone',$('#user_phone').val());
+        if(file_obj!=null){
+            fd.append('avatar_file',file_obj);
+        }
+        $.ajax({
+            url:'${pageContext.request.contextPath }/updateUserInfo.action',
+            type:'post',
+            data:fd,
+            processData:false,  //tell jQuery not to process the data
+            contentType: false,  //tell jQuery not to set contentType
+            success:function (data) {
+                if(data=="SUCCESS"){
+                    spop({
+                        template: '<h4 class="spop-title">用户信息更新成功！</h4>',
+                        position: 'top-center',
+                        style: 'success',
+                        autoclose: 2000,
+                        onClose : function(){
+                            window.location.reload();
+                        }
+                    });
+                }else{
+                    spop({
+                        template: '<h4 class="spop-title">用户信息更新失败！</h4>',
+                        position: 'top-center',
+                        style: 'error',
+                        autoclose: 2000,
+                        onClose : function(){
+                            window.location.reload();
+                        }
+                    });
+                }
+            }
+        })
+    }
+</script>
 </html>

@@ -23,15 +23,15 @@
     <%--引入头部和左侧导航栏--%>
 	<%@include file="head.jsp" %>
     <!-- 客户列表查询部分  start-->
-	<div id="page-wrapper">
+	<div id="page-wrapper" style="background-color: aliceblue;">
 		<div class="row">
 			<div class="col-lg-12">
-				<h1 class="page-header">客户拜访管理</h1>
+				<h1 class="page-header" style="margin-top: 15px;">客户拜访管理</h1>
 			</div>
 			<!-- /.col-lg-12 -->
 		</div>
 		<!-- 多条件查询 -->
-		<div class="panel panel-default">
+		<div class="panel panel-default" style="margin-bottom: 15px;">
 			<div class="panel-body">
 				<form class="form-inline" method="get" 
 				      action="${pageContext.request.contextPath }/visit/list.action">
@@ -63,16 +63,16 @@
 		<a href="#" class="btn btn-primary" data-toggle="modal" 
 		           data-target="#newVisitDialog" onclick="clearVisit()"style="margin-bottom: 4px">
             <i class="fa fa-plus fa-lg" style="margin-right: 5px"></i>
-            新建</a>
+            录入</a>
         <a href="${pageContext.request.contextPath}/excelExport/exportVisit.action" class="btn btn-primary"  style="margin-bottom: 4px;margin-left: 6px;">
             <i class="fa fa-share fa-lg" style="margin-right: 5px"></i>
             Excel导出</a>
             <div class="row">
 			<div class="col-lg-12">
 				<div class="panel panel-default">
-					<div class="panel-heading">拜访信息列表</div>
+					<div class="panel-heading">拜访记录列表</div>
 					<!-- /.panel-heading -->
-					<table class="table table-bordered table-striped">
+					<table class="table table-hover<%--table-bordered table-striped--%>">
 						<thead>
 							<tr>
 								<th>客户名称</th>
@@ -104,7 +104,7 @@
 							</c:forEach>
 						</tbody>
 					</table>
-					<div class="col-md-12 text-right">
+					<div class="col-md-12 text-right" style="padding-right: 0px;">
 						<yh:page url="${pageContext.request.contextPath }/visit/list.action" />
 					</div>
 					<!-- /.panel-body -->
@@ -124,7 +124,7 @@
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-				<h4 class="modal-title" id="myAddModalLabel">新建拜访信息</h4>
+				<h4 class="modal-title" id="myAddModalLabel">拜访记录录入</h4>
 			</div>
 			<div class="modal-body">
 				<form class="form-horizontal" id="new_visit_form">
@@ -186,7 +186,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-				<button type="button" class="btn btn-primary" onclick="createVisit()">创建</button>
+				<button type="button" class="btn btn-primary" onclick="createVisit()">录入</button>
 			</div>
 		</div>
 	</div>
@@ -200,7 +200,7 @@
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-				<h4 class="modal-title" id="myAditModalLabel">修改拜访信息</h4>
+				<h4 class="modal-title" id="myAditModalLabel">修改拜访记录</h4>
 			</div>
 			<div class="modal-body">
 				<form class="form-horizontal" id="edit_visit_form">
@@ -288,6 +288,9 @@
 <script src="../../js/spop.min.js"></script>
 <%--美化confirm--%>
 <script src="../../js/flavr.min.js"></script>
+<%--文件上传--%>
+<script src="../../js/fileinput.js"></script>
+<script src="../../js/zh.js"></script>
 <!-- 编写js代码 -->
 <script type="text/javascript">
     //初始化日期插件
