@@ -39,7 +39,8 @@ public class Upload {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            dbPath="upload/"+filename;
+            /*dbPath="upload/"+filename;*/
+            dbPath=filename;
         }
         return dbPath;
     }
