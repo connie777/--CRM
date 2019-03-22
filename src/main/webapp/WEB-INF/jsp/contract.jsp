@@ -15,8 +15,6 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>合同管理</title>
-    <%--引入日期选择器--%>
-    <link href="https://cdn.bootcss.com/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" rel="stylesheet">
     <style type="text/css">
         #element_to_pop_up{
             /*width: 1000px;
@@ -166,19 +164,16 @@
 
 <!-- 引入js文件 -->
 <!-- jQuery -->
-<script src="<%=basePath%>js/jquery-1.11.3.min.js"></script>
+<script src="../../js/jquery-1.11.3.min.js"></script>
 <!-- Bootstrap Core JavaScript -->
-<script src="<%=basePath%>js/bootstrap.min.js"></script>
+<script src="../../js/bootstrap.min.js"></script>
 <!-- Metis Menu Plugin JavaScript -->
-<script src="<%=basePath%>js/metisMenu.min.js"></script>
+<script src="../../js/metisMenu.min.js"></script>
 <!-- DataTables JavaScript -->
-<script src="<%=basePath%>js/jquery.dataTables.min.js"></script>
-<script src="<%=basePath%>js/dataTables.bootstrap.min.js"></script>
+<script src="../../js/jquery.dataTables.min.js"></script>
+<script src="../../js/dataTables.bootstrap.min.js"></script>
 <!-- Custom Theme JavaScript -->
-<script src="<%=basePath%>js/sb-admin-2.js"></script>
-<%--引入日期选择器--%>
-<script src="https://cdn.bootcss.com/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js"></script>
-<script src="https://cdn.bootcss.com/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<script src="../../js/sb-admin-2.js"></script>
 <%--文件上传--%>
 <script src="../../js/fileinput.js"></script>
 <script src="../../js/zh.js"></script>
@@ -188,6 +183,9 @@
 <script src="../../js/bpopup.min.js"></script>
 <%--美化confirm--%>
 <script src="../../js/flavr.min.js"></script>
+<%--引入日期选择器--%>
+<script src="../../js/bootstrap-datepicker.js"></script>
+<script src="../../js/datepicker.zh-CN.min.js"></script>
 <!-- 编写js代码 -->
 <script type="text/javascript">
     //初始化日期插件、文件上传插件

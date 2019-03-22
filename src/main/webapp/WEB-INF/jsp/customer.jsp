@@ -369,16 +369,16 @@
 </div>
 <!-- 引入js文件 -->
 <!-- jQuery -->
-<script src="<%=basePath%>js/jquery-1.11.3.min.js"></script>
+<script src="../../js/jquery-1.11.3.min.js"></script>
 <!-- Bootstrap Core JavaScript -->
-<script src="<%=basePath%>js/bootstrap.min.js"></script>
+<script src="../../js/bootstrap.min.js"></script>
 <!-- Metis Menu Plugin JavaScript -->
-<script src="<%=basePath%>js/metisMenu.min.js"></script>
+<script src="../../js/metisMenu.min.js"></script>
 <!-- DataTables JavaScript -->
-<script src="<%=basePath%>js/jquery.dataTables.min.js"></script>
-<script src="<%=basePath%>js/dataTables.bootstrap.min.js"></script>
+<script src="../../js/jquery.dataTables.min.js"></script>
+<script src="../../js/dataTables.bootstrap.min.js"></script>
 <!-- Custom Theme JavaScript -->
-<script src="<%=basePath%>js/sb-admin-2.js"></script>
+<script src="../../js/sb-admin-2.js"></script>
 <%--提示框--%>
 <script src="../../js/spop.min.js"></script>
 <%--美化confirm--%>

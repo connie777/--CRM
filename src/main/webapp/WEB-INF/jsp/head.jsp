@@ -18,7 +18,7 @@
 	<!-- Custom CSS -->
 	<link href="../../css/sb-admin-2.css" rel="stylesheet" />
 	<!-- Custom Fonts -->
-    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="../../css/font-awesome.css">
     <link href="../../css/crm.css" rel="stylesheet" type="text/css" />
     <%--提示框--%>
     <link rel="stylesheet" href="../../css/spop.min.css" />
@@ -28,6 +28,8 @@
     <link rel="stylesheet" href="../../css/flavr.css">
     <%--文件上传--%>
     <link rel="stylesheet" href="../../css/fileinput.css">
+    <%--引入日期选择器--%>
+    <link rel="stylesheet" href="../../css/bootstrap-datepicker.css"/>
     <%--CSS控制样式--%>
     <style>
         .kv-avatar .krajee-default.file-preview-frame,.kv-avatar .krajee-default.file-preview-frame:hover {
@@ -382,9 +384,9 @@
         </div><!-- /.modal-dialog -->
     </div>
 </body>
-<script src="../../js/jquery-1.11.3.min.js"></script>
 <%--<script src="../../js/bootstrap.min.js"></script>--%>
-
+<!-- jQuery -->
+<script src="../../js/jquery-1.11.3.min.js"></script>
 <script type="text/javascript">
     $(function () {
         /*var btnCust = '<button type="button" class="btn btn-secondary" title="Add picture tags" ' +
