@@ -12,6 +12,7 @@
 <html>
 <head>
     <title>dashboard</title>
+    <link rel="shortcut icon" href="../../images/favicon.ico" type="image/x-icon"/>
     <style type="text/css">
         .box1{
             border: 1px solid rgb(222, 226, 230);

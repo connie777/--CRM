@@ -7,6 +7,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>导航栏</title>
+    <link rel="shortcut icon" href="../../images/favicon.ico" type="image/x-icon"/>
 	<!-- 引入css样式文件 -->
 	<!-- Bootstrap Core CSS -->
 	<link href="../../css/bootstrap.min.css" rel="stylesheet" />

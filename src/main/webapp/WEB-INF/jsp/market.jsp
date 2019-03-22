@@ -15,6 +15,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>营销管理</title>
+    <link rel="shortcut icon" href="../../images/favicon.ico" type="image/x-icon"/>
     </head>
 <body>
 <div id="wrapper">

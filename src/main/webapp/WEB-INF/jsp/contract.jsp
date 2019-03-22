@@ -15,6 +15,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>合同管理</title>
+    <link rel="shortcut icon" href="../../images/favicon.ico" type="image/x-icon"/>
     <style type="text/css">
         #element_to_pop_up{
             /*width: 1000px;
