@@ -18,6 +18,7 @@
 <script src="../../js/jquery.pure.tooltips.js"></script>
 <script src="../../js/spop.min.js"></script>
 <script>
+    //定义全局变量code短码
     var code;
 	(function() {
 		// trim polyfill : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
@@ -217,7 +218,6 @@
 		var usercode = $("#register-usercode").val(),
             username = $("#register-username").val(),
 			password = $("#register-password").val(),
-			repassword = $("#register-repassword").val(),
 			phone = $("#register-phone").val(),
 			flag = false,
             input_code=$('#register-validate-code').val();
@@ -236,15 +236,15 @@
 			flag = true;
 		}
 		else if(!regExp.test(usercode)){
-        $.pt({
-            target: $("#register-usercode"),
-            position: 'r',
-            align: 't',
-            width: 'auto',
-            height: 'auto',
-            content:"用户名必须为15位以下的字母或数字！"
-        });
-        flag = true;
+            $.pt({
+                target: $("#register-usercode"),
+                position: 'r',
+                align: 't',
+                width: 'auto',
+                height: 'auto',
+                content:"用户名必须为15位以下的字母或数字！"
+            });
+            flag = true;
         }
         else if(username == ""){
             $.pt({
@@ -276,7 +276,18 @@
                 content:"手机号不能为空！"
             });
             flag = true;
-        }else if(input_code!=code){
+        }else if(input_code == ""){
+            $.pt({
+                target: $("#register-validate-code"),
+                position: 'r',
+                align: 't',
+                width: 'auto',
+                height: 'auto',
+                content:"验证码不能为空！"
+            });
+            flag = true;
+        }
+        else if(input_code!=code){
             $.pt({
                 target: $("#register-validate-code"),
                 position: 'r',
@@ -492,6 +503,7 @@
 
         var mobile=$('#register-phone').val();
         code=createCode();
+        console.log(code);
         var tpl_value='%23code%23%3d'+code;
         var tpl_id=143712;
         var key='433123f58c7eea010555e640d191aa49';
@@ -499,6 +511,7 @@
             url:'http://v.juhe.cn/sms/send?mobile='+mobile+'&tpl_id='+tpl_id+'&tpl_value='+tpl_value+'&key='+key,
             type:'post',
             success:function (data) {
+                console.log(data.reason);
                 if(data.error_code==0){
                     console.log(code);
                     spop({
