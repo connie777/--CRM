@@ -324,7 +324,19 @@
 <script src="../../js/zh.js"></script>
 <!-- 编写js代码 -->
 <script type="text/javascript">
-//清空新建联系人窗口中的数据
+    //radio的点击
+    $('input:radio').click(function(){
+        var $radio = $(this);
+        // if this was previously checked
+        if ($radio.data('waschecked') == true){
+            $radio.prop('checked', false);
+            $radio.data('waschecked', false);
+        } else {
+            $radio.prop('checked', true);
+            $radio.data('waschecked', true);
+        }
+    });
+    //清空新建联系人窗口中的数据
 	function clearLinkman() {
 	    $("#new_lkm_name").val("");
 	    $("#new_customerBelong").val("")
@@ -339,30 +351,30 @@
 	// 创建联系人
 	function createLinkman() {
 	    console.log($("#new_linkman_form").serialize());
-	$.post("<%=basePath%>linkman/create.action",
-	$("#new_linkman_form").serialize(),function(data){
-	        if(data =="OK"){
-                spop({
-                    template: '<h4 class="spop-title">联系人创建成功！</h4>',
-                    position: 'top-center',
-                    style: 'success',
-                    autoclose: 1000,
-                    onClose : function(){
-                        window.location.reload();
-                    }
-                });
-	        }else{
-                spop({
-                    template: '<h4 class="spop-title">联系人创建失败！</h4>',
-                    position: 'top-center',
-                    style: 'error',
-                    autoclose: 1000,
-                    onClose : function(){
-                        window.location.reload();
-                    }
-                });
-	        }
-	    });
+        $.post("<%=basePath%>linkman/create.action",
+        $("#new_linkman_form").serialize(),function(data){
+                if(data =="OK"){
+                    spop({
+                        template: '<h4 class="spop-title">联系人创建成功！</h4>',
+                        position: 'top-center',
+                        style: 'success',
+                        autoclose: 1000,
+                        onClose : function(){
+                            window.location.reload();
+                        }
+                    });
+                }else{
+                    spop({
+                        template: '<h4 class="spop-title">联系人创建失败！</h4>',
+                        position: 'top-center',
+                        style: 'error',
+                        autoclose: 1000,
+                        onClose : function(){
+                            window.location.reload();
+                        }
+                    });
+                }
+            });
 	}
 	// 通过id获取修改的联系人信息
 	function editLinkman(id) {
@@ -376,13 +388,13 @@
                 $("#edit_customerBelong").val(data.lkm_cust_id);
                 if(data.lkm_gender=='男'){
 
-                    $("#edit_lkm_gender").attr("checked","checked");
-                    $("#edit_lkm_gender1").attr("checked",false);
+                    $("#edit_lkm_gender").prop('checked', true);
+                    $("#edit_lkm_gender1").prop("checked",false);
 
                 }else if(data.lkm_gender=='女'){
 
-                    $("#edit_lkm_gender1").attr("checked","checked");
-                    $("#edit_lkm_gender").attr("checked",false);
+                    $("#edit_lkm_gender1").prop("checked",true);
+                    $("#edit_lkm_gender").prop("checked",false);
                 }
 
                 $("#edit_email").val(data.lkm_email);
