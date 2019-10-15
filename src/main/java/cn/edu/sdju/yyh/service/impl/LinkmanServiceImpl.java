@@ -76,9 +76,13 @@ public class LinkmanServiceImpl implements LinkmanService {
         }
 
         // 从哪条数据开始查
-        linkman.setStart_index((page-1) * rows);
+        if(page!=null&&rows!=null){
+            linkman.setStart_index((page-1) * rows);
+        }
         // 每页数
-        linkman.setRows(rows);
+        if(rows!=null){
+            linkman.setRows(rows);
+        }
         // 查询客户列表
         List<Linkman> linkmanList=
                 linkmanDao.selectLinkmanList(linkman);
@@ -86,9 +90,15 @@ public class LinkmanServiceImpl implements LinkmanService {
         Integer count = linkmanDao.selectLinkmanListCount(linkman);
         // 创建Page返回对象用于分页
         Page<Linkman> result = new Page<>();
-        result.setPage(page);
+        if(page!=null){
+            result.setPage(page);
+        }
+
         result.setRows(linkmanList);/*存入查询结果*/
-        result.setSize(rows);
+        if(rows!=null){
+            result.setSize(rows);
+        }
+
         result.setTotal(count);
         return result;
     }

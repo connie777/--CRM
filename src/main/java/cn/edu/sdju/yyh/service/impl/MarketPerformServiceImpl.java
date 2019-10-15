@@ -44,8 +44,12 @@ public class MarketPerformServiceImpl implements MarketPerformService {
         if(perform_user_id!=null){
             marketPerform.setPerform_user_id(perform_user_id);
         }
-        marketPerform.setRows(rows);
-        marketPerform.setStart_index((page-1)*rows);
+        if(rows!=null){
+            marketPerform.setRows(rows);
+        }
+        if(rows!=null&&page!=null){
+            marketPerform.setStart_index((page-1)*rows);
+        }
         List<MarketPerform> marketPerformList=this.marketPerformDao.selectMarketPerformList(marketPerform);
         Integer count=this.marketPerformDao.selectMarketPerformCount(marketPerform);
         Page<MarketPerform> marketPerformPage=new Page<MarketPerform>();

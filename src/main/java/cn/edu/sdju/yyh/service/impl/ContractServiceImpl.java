@@ -35,8 +35,12 @@ public class ContractServiceImpl implements ContractService {
         if(contract_cust_name!=null&&contract_cust_name!=""){
             contract.setContract_cust_name(contract_cust_name);
         }
-        contract.setRows(rows);
-        contract.setStart_index((page-1)*rows);
+        if(rows!=null){
+            contract.setRows(rows);
+        }
+        if(page!=null&&rows!=null){
+            contract.setStart_index((page-1)*rows);
+        }
         List<Contract> contractList=this.contractDao.selectContractList(contract);
         Integer count=this.contractDao.selectContractListCount(contract);
         Page<Contract> contractPage=new Page<Contract>();

@@ -1008,61 +1008,85 @@
       <DefaultExpression>&apos;3&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <key id="225" parent="155" name="PRIMARY">
+    <column id="225" parent="155" name="user_position">
+      <Position>8</Position>
+      <Comment>职位</Comment>
+      <DataType>varchar(100)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="226" parent="155" name="user_department">
+      <Position>9</Position>
+      <Comment>部门</Comment>
+      <DataType>varchar(100)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="227" parent="155" name="user_avatar">
+      <Position>10</Position>
+      <Comment>头像</Comment>
+      <DataType>varchar(255)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="228" parent="155" name="user_email">
+      <Position>11</Position>
+      <Comment>邮箱</Comment>
+      <DataType>varchar(100)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <key id="229" parent="155" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>user_id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="226" parent="156" name="visit_id">
+    <column id="230" parent="156" name="visit_id">
       <Position>1</Position>
       <DataType>int(32)|0s</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>1</SequenceIdentity>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="227" parent="156" name="visit_cust_id">
+    <column id="231" parent="156" name="visit_cust_id">
       <Position>2</Position>
       <Comment>客户id</Comment>
       <DataType>int(32)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="228" parent="156" name="visit_user_id">
+    <column id="232" parent="156" name="visit_user_id">
       <Position>3</Position>
       <Comment>负责人id</Comment>
       <DataType>int(32)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="229" parent="156" name="visit_lkm_id">
+    <column id="233" parent="156" name="visit_lkm_id">
       <Position>4</Position>
       <Comment>联系人id</Comment>
       <DataType>int(32)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="230" parent="156" name="visit_time">
+    <column id="234" parent="156" name="visit_time">
       <Position>5</Position>
       <Comment>拜访时间</Comment>
       <DataType>date|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="231" parent="156" name="visit_addr">
+    <column id="235" parent="156" name="visit_addr">
       <Position>6</Position>
       <Comment>拜访地点</Comment>
       <DataType>varchar(128)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="232" parent="156" name="visit_detail">
+    <column id="236" parent="156" name="visit_detail">
       <Position>7</Position>
       <Comment>拜访详情</Comment>
       <DataType>varchar(256)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="233" parent="156" name="visit_nexttime">
+    <column id="237" parent="156" name="visit_nexttime">
       <Position>8</Position>
       <Comment>下次拜访时间</Comment>
       <DataType>date|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <key id="234" parent="156" name="PRIMARY">
+    <key id="238" parent="156" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>visit_id</ColNames>
       <Primary>1</Primary>

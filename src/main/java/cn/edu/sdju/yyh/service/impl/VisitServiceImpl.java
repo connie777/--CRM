@@ -73,9 +73,15 @@ public class VisitServiceImpl implements VisitService {
         }
 
         // 从哪条数据开始查
-        visit.setStart_index((page-1) * rows); ;
+        if(page!=null&&rows!=null){
+            visit.setStart_index((page-1) * rows);
+        }
         // 每页数
-        visit.setRows(rows);
+        if(rows!=null){
+            visit.setRows(rows);
+        }
+
+
         // 查询拜访信息列表
         List<Visit> visits =
                 visitDao.selectVisitList(visit);

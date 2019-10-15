@@ -198,7 +198,7 @@
             clearBtn: true,
             todayHighlight : true
         });
-
+        //文件上传
         $("#new_contract_annex").fileinput({
             language:"zh",
             allowedFileExtensions: ["jpg", "png", "gif","jpeg"],

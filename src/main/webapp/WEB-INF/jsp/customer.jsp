@@ -515,6 +515,19 @@
             }
         })
 	}
+	function exportToExcel() {
+        new $.flavr({
+            modal       : false, //关闭模态
+            content     : '确定导出客户信息吗 ？',
+            dialog      : 'confirm',
+            onConfirm   : function( $container ){
+                window.location.href="${pageContext.request.contextPath}/excelExport/exportCustomer.action";
+                return false;
+            },
+            onCancel    : function( $container ){
+            }
+        })
+    }
 </script>
 </body>
 </html>

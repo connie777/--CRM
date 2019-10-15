@@ -47,9 +47,15 @@ public class MarketPlanServiceImpl implements MarketPlanService {
             marketPlan.setPlan_principal(plan_principal);
         }
         //从哪条数据开始查
-        marketPlan.setStart_index((page-1)*rows);
+        if(page!=null&&rows!=null){
+            marketPlan.setStart_index((page-1)*rows);
+        }
+
         // 每页数据数量
-        marketPlan.setRows(rows);
+        if(rows!=null){
+            marketPlan.setRows(rows);
+        }
+
         //营销计划结果集
         List<MarketPlan> marketPlanList=marketPlanDao.selectMarketPlanList(marketPlan);
         // 查询营销计划总记录数

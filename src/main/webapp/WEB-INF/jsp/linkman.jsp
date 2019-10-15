@@ -223,7 +223,7 @@
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-				<h4 class="modal-title" id="myAditModalLabel">修改客户信息</h4>
+				<h4 class="modal-title" id="myAditModalLabel">修改联系人信息</h4>
 			</div>
 			<div class="modal-body">
 				<form class="form-horizontal" id="edit_linkman_form">

@@ -508,6 +508,7 @@
         var tpl_value='%23code%23%3d'+code;
         var tpl_id=143712;
         var key='433123f58c7eea010555e640d191aa49';
+        //发送验证码
         $.ajax({
             url:'http://v.juhe.cn/sms/send?mobile='+mobile+'&tpl_id='+tpl_id+'&tpl_value='+tpl_value+'&key='+key,
             type:'post',

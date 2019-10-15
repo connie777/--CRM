@@ -1,9 +1,8 @@
 package cn.edu.sdju.yyh.po;
-import java.io.Serializable;
 /**
  * 客户持久化类
  */
-public class Customer implements Serializable {
+public class Customer{
 	private Integer cust_id;          // 客户编号
 	private String cust_name;         // 客户名称
 	private Integer cust_user_id;    // 负责人id

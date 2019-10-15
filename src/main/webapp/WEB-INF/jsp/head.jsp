@@ -201,7 +201,7 @@
 		<!-- 用户信息和系统设置 start -->
 		<li class="dropdown" style="top: -2px;">
 			<a class="dropdown-toggle" data-toggle="dropdown" href="#" style="padding: 0px;">
-                <img id="top_user_avatar" style="height: 50px;width: 60px;" src="http://localhost:8080/${USER_SESSION.user_avatar}">
+                <img id="top_user_avatar" style="height: 50px;width: 60px;" src="http://47.96.226.251:8080/${USER_SESSION.user_avatar}">
 			</a>
 			<ul class="dropdown-menu dropdown-user">
 				<li style="margin-left: 20px;margin-top: 4px;">

@@ -61,7 +61,7 @@
 		<a href="#" class="btn btn-primary" data-toggle="modal" 
 		           data-target="#newPlanDialog" onclick="clearPlan()"style="margin-bottom: 4px">
             <i class="fa fa-plus fa-lg" style="margin-right: 5px"></i>
-            新建</a>
+            创建</a>
         </c:if>
         <a href="${pageContext.request.contextPath}/excelExport/exportPlan.action" class="btn btn-primary"  style="margin-bottom: 4px;margin-left: 6px;">
             <i class="fa fa-share fa-lg" style="margin-right: 5px"></i>
@@ -123,7 +123,7 @@
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-				<h4 class="modal-title" id="myAddModalLabel">新建营销计划</h4>
+				<h4 class="modal-title" id="myAddModalLabel">创建营销计划</h4>
 			</div>
 			<div class="modal-body">
 				<form class="form-horizontal" id="new_plan_form">
